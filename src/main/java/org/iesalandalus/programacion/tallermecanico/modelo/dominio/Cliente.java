@@ -1,11 +1,11 @@
-package org.iesalandalus.programacion.tallermecanico.modelo;
+package org.iesalandalus.programacion.tallermecanico.modelo.dominio;
 
 import java.util.Objects;
 
 public class Cliente {
     private final String ER_NOMBRE = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+$";
-    private final String ER_DNI = "\\\\d{8}[A-HJ-NP-TV-Z]";
-    private final String ER_TELEFONO = "[6789]\\\\d{8}";
+    private final String ER_DNI = "\\d{8}[A-HJ-NP-TV-Z]";
+    private final String ER_TELEFONO = "\\d{9}";
     private String nombre;
     private String dni;
     private String telefono;
@@ -20,9 +20,9 @@ public class Cliente {
         if (cliente == null) {
             throw new NullPointerException("No se puede copiar un cliente nulo.");
         }
-        this.nombre = cliente.nombre;
-        this.dni = cliente.dni;
-        this.telefono = cliente.telefono;
+        nombre = cliente.nombre;
+        dni = cliente.dni;
+        telefono = cliente.telefono;
     }
 
 
@@ -36,7 +36,6 @@ public class Cliente {
         } else if (!nombre.matches(ER_NOMBRE)) {
             throw new IllegalArgumentException("El nombre no tiene un formato válido.");
         }
-
         this.nombre = nombre;
     }
 
@@ -80,7 +79,7 @@ public class Cliente {
     }
 
     public static Cliente get(String dni) {
-        return new Cliente("Nombre valido", dni, ("600000000"));
+        return new Cliente("Nombre valido", dni, "623567876");
     }
 
     @Override
