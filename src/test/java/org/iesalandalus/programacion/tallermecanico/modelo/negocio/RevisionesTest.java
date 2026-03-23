@@ -110,7 +110,7 @@ class RevisionesTest {
         assertEquals(revision1, revisionesVehiculo.get(0));
         assertSame(revision1, revisionesVehiculo.get(0));
         assertEquals(revision3, revisionesVehiculo.get(1));
-        assertSame(revision3,revisionesVehiculo.get(1));
+        assertSame(revision3, revisionesVehiculo.get(1));
     }
 
     @Test

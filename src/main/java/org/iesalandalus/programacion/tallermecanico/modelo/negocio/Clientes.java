@@ -4,11 +4,12 @@ import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepci
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Clientes {
-    public ArrayList<Cliente> listaClientes = new ArrayList<>();
+    public List<Cliente> listaClientes = new ArrayList<>();
 
-    public ArrayList get() {
+    public List<Cliente> get() {
         return new ArrayList<>(this.listaClientes);
     }
 
@@ -18,7 +19,7 @@ public class Clientes {
         }
     }
 
-    public Cliente modificar(Cliente cliente, String nuevoNombre, String nuevoTelefono) throws Exception {
+    public Cliente modificar(Cliente cliente, String nuevoNombre, String nuevoTelefono) throws TallerMecanicoExcepcion {
         int indice = this.listaClientes.indexOf(cliente);
         if (indice == -1) {
             throw new TallerMecanicoExcepcion("Error: Cliente no encontrado.");
