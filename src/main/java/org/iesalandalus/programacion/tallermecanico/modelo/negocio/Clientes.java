@@ -7,16 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Clientes {
-    public List<Cliente> listaClientes = new ArrayList<>();
+    private List<Cliente> listaClientes = new ArrayList<>();
 
     public List<Cliente> get() {
         return new ArrayList<>(this.listaClientes);
     }
 
-    public void insertar(Cliente cliente) {
-        if (cliente != null && !this.listaClientes.contains(cliente)) {
-            this.listaClientes.add(cliente);
+    public void insertar(Cliente cliente) throws TallerMecanicoExcepcion {
+        if (cliente == null) {
+            throw new NullPointerException("No se puede insertar un cliente nulo.");
         }
+        if (this.listaClientes.contains(cliente)) {
+            throw new TallerMecanicoExcepcion("Error: Ya existe un cliente con ese DNI.");
+        }
+        this.listaClientes.add(cliente);
     }
 
     public Cliente modificar(Cliente cliente, String nuevoNombre, String nuevoTelefono) throws TallerMecanicoExcepcion {
@@ -38,10 +42,10 @@ public class Clientes {
     }
 
     public Cliente buscar(Cliente cliente) {
-        int indice = this.listaClientes.indexOf(cliente);
         if (cliente == null) {
             throw new NullPointerException("No se puede buscar un cliente nulo.");
         }
+        int indice = this.listaClientes.indexOf(cliente);
         if (indice >= 0) {
             return this.listaClientes.get(indice);
         }
@@ -49,10 +53,10 @@ public class Clientes {
     }
 
     public void borrar(Cliente cliente) throws TallerMecanicoExcepcion {
-        boolean eliminado = this.listaClientes.remove(cliente);
         if (cliente == null) {
             throw new NullPointerException("No se puede eliminar un cliente nulo.");
         }
+        boolean eliminado = this.listaClientes.remove(cliente);
         if (!eliminado) {
             throw new TallerMecanicoExcepcion("Error: No se puede borrar un cliente que no existe en la lista.");
         }
