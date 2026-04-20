@@ -15,7 +15,6 @@ class ClientesTest {
 
     private static Cliente cliente1;
     private static Cliente cliente2;
-    private Clientes clientes;
 
     @BeforeEach
     void init() {
