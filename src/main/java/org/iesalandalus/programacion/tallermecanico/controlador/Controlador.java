@@ -15,7 +15,7 @@ import java.util.List;
  * Implementa el patrón MVC (Modelo-Vista-Controlador) gestionando las
  * operaciones del taller mecánico y coordinando la interacción entre componentes.
  */
-public class Controlador {
+public class Controlador implements IControlador {
 
     private ModeloCascada modeloCascada;
     private Vista vista;
@@ -44,6 +44,7 @@ public class Controlador {
      * Inicia la aplicación inicializando el modelo y la vista.
      * Prepara el sistema para comenzar las operaciones.
      */
+    @Override
     public void comenzar() {
         modeloCascada.comenzar();
         vista.comenzar();
@@ -53,6 +54,7 @@ public class Controlador {
      * Finaliza la aplicación cerrando el modelo y la vista.
      * Libera recursos y muestra mensajes de finalización.
      */
+    @Override
     public void terminar() {
         modeloCascada.terminar();
         vista.terminar();
@@ -65,6 +67,7 @@ public class Controlador {
      * @param cliente Cliente a insertar
      * @throws OperationNotSupportedException Si el cliente ya existe o es inválido
      */
+    @Override
     public void insertar(Cliente cliente) throws OperationNotSupportedException {
         modeloCascada.insertar(cliente);
     }
@@ -76,6 +79,7 @@ public class Controlador {
      * @param vehiculo Vehículo a insertar
      * @throws OperationNotSupportedException Si el vehículo ya existe o es inválido
      */
+    @Override
     public void insertar(Vehiculo vehiculo) throws OperationNotSupportedException {
         modeloCascada.insertar(vehiculo);
     }
@@ -87,6 +91,7 @@ public class Controlador {
      * @param revision Revisión a insertar (con cliente de búsqueda)
      * @throws OperationNotSupportedException Si la revisión ya existe o es inválida
      */
+    @Override
     public void insertar(Revision revision) throws OperationNotSupportedException {
         // Buscar el cliente real usando el DNI del cliente de búsqueda
         Cliente clienteReal = modeloCascada.buscar(revision.getCliente());
@@ -112,6 +117,7 @@ public class Controlador {
      * @param cliente Cliente a buscar
      * @return Cliente encontrado o null si no existe
      */
+    @Override
     public Cliente buscar(Cliente cliente) {
         return modeloCascada.buscar(cliente);
     }
@@ -123,6 +129,7 @@ public class Controlador {
      * @param vehiculo Vehículo a buscar
      * @return Vehículo encontrado o null si no existe
      */
+    @Override
     public Vehiculo buscar(Vehiculo vehiculo) {
         return modeloCascada.buscar(vehiculo);
     }
@@ -134,6 +141,7 @@ public class Controlador {
      * @param revision Revisión a buscar
      * @return Revisión encontrada o null si no existe
      */
+    @Override
     public Revision buscar(Revision revision) {
         return modeloCascada.buscar(revision);
     }
@@ -148,6 +156,7 @@ public class Controlador {
      * @return Cliente modificado
      * @throws OperationNotSupportedException Si el cliente no existe o los datos son inválidos
      */
+    @Override
     public Cliente modificar(Cliente cliente, String nombre, String telefono) throws OperationNotSupportedException {
         return modeloCascada.modificar(cliente, nombre, telefono);
     }
@@ -159,6 +168,7 @@ public class Controlador {
      * @param cliente Cliente a borrar
      * @throws OperationNotSupportedException Si el cliente no existe
      */
+    @Override
     public void borrar(Cliente cliente) throws OperationNotSupportedException {
         modeloCascada.borrar(cliente);
     }
@@ -170,6 +180,7 @@ public class Controlador {
      * @param vehiculo Vehículo a borrar
      * @throws OperationNotSupportedException Si el vehículo no existe
      */
+    @Override
     public void borrar(Vehiculo vehiculo) throws OperationNotSupportedException {
         modeloCascada.borrar(vehiculo);
     }
@@ -182,6 +193,7 @@ public class Controlador {
      * @return Revisión borrada
      * @throws OperationNotSupportedException Si la revisión no existe
      */
+    @Override
     public Revision borrar(Revision revision) throws OperationNotSupportedException {
         Trabajo borrado = modeloCascada.borrar((Trabajo) revision);
         return (Revision) borrado;
@@ -193,6 +205,7 @@ public class Controlador {
      * 
      * @return Lista de clientes
      */
+    @Override
     public List<Cliente> getClientes() {
         return modeloCascada.getClientes();
     }
@@ -203,6 +216,7 @@ public class Controlador {
      * 
      * @return Lista de vehículos
      */
+    @Override
     public List<Vehiculo> getVehiculos() {
         return modeloCascada.getVehiculos();
     }
@@ -213,6 +227,7 @@ public class Controlador {
      * 
      * @return Lista de revisiones
      */
+    @Override
     public List<Revision> getRevisiones() {
         List<Trabajo> trabajos = modeloCascada.getTrabajos();
         List<Revision> revisiones = new java.util.ArrayList<>();
@@ -231,6 +246,7 @@ public class Controlador {
      * @param cliente Cliente del que obtener las revisiones
      * @return Lista de revisiones del cliente
      */
+    @Override
     public List<Revision> getRevisiones(Cliente cliente) {
         List<Trabajo> trabajos = modeloCascada.getTrabajos(cliente);
         List<Revision> revisiones = new java.util.ArrayList<>();
@@ -249,6 +265,7 @@ public class Controlador {
      * @param vehiculo Vehículo del que obtener las revisiones
      * @return Lista de revisiones del vehículo
      */
+    @Override
     public List<Revision> getRevisiones(Vehiculo vehiculo) {
         List<Trabajo> trabajos = modeloCascada.getTrabajos(vehiculo);
         List<Revision> revisiones = new java.util.ArrayList<>();
@@ -269,6 +286,7 @@ public class Controlador {
      * @return Revisión actualizada
      * @throws OperationNotSupportedException Si la revisión no existe o está cerrada
      */
+    @Override
     public Revision anadirHoras(Revision revision, int horas) throws OperationNotSupportedException {
         return modeloCascada.anadirHoras(revision, horas);
     }
@@ -282,6 +300,7 @@ public class Controlador {
      * @return Revisión actualizada
      * @throws OperationNotSupportedException Si la revisión no existe o está cerrada
      */
+    @Override
     public Revision anadirPrecioMaterial(Revision revision, float precioMaterial) {
         return modeloCascada.anadirPrecioMaterial(revision, precioMaterial);
     }
@@ -295,6 +314,7 @@ public class Controlador {
      * @return Revisión cerrada
      * @throws OperationNotSupportedException Si la revisión no existe o la fecha es inválida
      */
+    @Override
     public Revision cerrar(Revision revision, java.time.LocalDate fechaCierre) throws OperationNotSupportedException {
         Trabajo cerrado = modeloCascada.cerrar((Trabajo) revision, fechaCierre);
         return (Revision) cerrado;

@@ -50,9 +50,9 @@ class ModeloTest {
         when(cliente.getDni()).thenReturn("11223344B");
         when(cliente.getTelefono()).thenReturn("950112233");
         vehiculo = mock();
-        when(vehiculo.marca()).thenReturn("Seat");
-        when(vehiculo.modelo()).thenReturn("León");
-        when(vehiculo.matricula()).thenReturn("1234BCD");
+        when(vehiculo.getMarca()).thenReturn("Seat");
+        when(vehiculo.getModelo()).thenReturn("León");
+        when(vehiculo.getMatricula()).thenReturn("1234BCD");
         revision = mock();
         when(revision.getCliente()).thenReturn(cliente);
         when(revision.getVehiculo()).thenReturn(vehiculo);
@@ -249,7 +249,7 @@ class ModeloTest {
         when(trabajos.get(cliente)).thenReturn(new ArrayList<>(List.of(revision)));
         List<Trabajo> trabajosCliente = modelo.getTrabajos(cliente);
         verify(trabajos).get(cliente);
-        assertNotSame(revision,trabajosCliente.get(0));
+        assertNotSame(revision, trabajosCliente.get(0));
     }
 
     @Test
@@ -257,7 +257,7 @@ class ModeloTest {
         when(trabajos.get(vehiculo)).thenReturn(new ArrayList<>(List.of(revision)));
         List<Trabajo> trabajosVehiculo = modelo.getTrabajos(vehiculo);
         verify(trabajos).get(vehiculo);
-        assertNotSame(revision,trabajosVehiculo.get(0));
+        assertNotSame(revision, trabajosVehiculo.get(0));
     }
 
 }

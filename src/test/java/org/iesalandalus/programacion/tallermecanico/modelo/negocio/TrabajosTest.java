@@ -40,9 +40,9 @@ class TrabajosTest {
         cliente2 = mock();
         when(cliente2.getDni()).thenReturn("11111111H");
         vehiculo1 = mock();
-        when(vehiculo1.matricula()).thenReturn("1234BCD");
+        when(vehiculo1.getMatricula()).thenReturn("1234BCD");
         vehiculo2 = mock();
-        when(vehiculo2.matricula()).thenReturn("1111BBB");
+        when(vehiculo2.getMatricula()).thenReturn("1111BBB");
     }
 
     @BeforeEach

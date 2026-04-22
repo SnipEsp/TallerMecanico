@@ -40,6 +40,18 @@ public class Vehiculo {
         }
     }
 
+    public String getMarca() {
+        return marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public String getMatricula() {
+        return matricula;
+    }
+
     public static Vehiculo get(String matricula) {
         return new Vehiculo("Seat", "Toledo", matricula);
     }

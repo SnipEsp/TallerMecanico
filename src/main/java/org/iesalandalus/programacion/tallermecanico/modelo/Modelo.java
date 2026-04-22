@@ -43,4 +43,10 @@ public interface Modelo {
 
     List<Vehiculo> getVehiculos();
 
+    List<Trabajo> getTrabajos();
+
+    List<Trabajo> getTrabajos(Cliente cliente);
+
+    List<Trabajo> getTrabajos(Vehiculo vehiculo);
+
 }
