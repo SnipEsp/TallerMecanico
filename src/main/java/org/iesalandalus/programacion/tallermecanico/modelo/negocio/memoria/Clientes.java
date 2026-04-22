@@ -6,13 +6,15 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Clientes {
+public class Clientes implements org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes {
     private List<Cliente> listaClientes = new ArrayList<>();
 
+    @Override
     public List<Cliente> get() {
         return new ArrayList<>(this.listaClientes);
     }
 
+    @Override
     public void insertar(Cliente cliente) throws TallerMecanicoExcepcion {
         if (cliente == null) {
             throw new NullPointerException("No se puede insertar un cliente nulo.");
@@ -23,6 +25,7 @@ public class Clientes {
         this.listaClientes.add(cliente);
     }
 
+    @Override
     public Cliente modificar(Cliente cliente, String nuevoNombre, String nuevoTelefono) throws TallerMecanicoExcepcion {
         int indice = this.listaClientes.indexOf(cliente);
         if (indice == -1) {
@@ -41,6 +44,7 @@ public class Clientes {
         return encontrado;
     }
 
+    @Override
     public Cliente buscar(Cliente cliente) {
         if (cliente == null) {
             throw new NullPointerException("No se puede buscar un cliente nulo.");
@@ -52,6 +56,7 @@ public class Clientes {
         return null;
     }
 
+    @Override
     public void borrar(Cliente cliente) throws TallerMecanicoExcepcion {
         if (cliente == null) {
             throw new NullPointerException("No se puede eliminar un cliente nulo.");

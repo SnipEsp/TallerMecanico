@@ -1,9 +1,10 @@
 package org.iesalandalus.programacion.tallermecanico.controlador;
 
-import org.iesalandalus.programacion.tallermecanico.modelo.Modelo;
+import org.iesalandalus.programacion.tallermecanico.modelo.cascada.ModeloCascada;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
 import org.iesalandalus.programacion.tallermecanico.vista.Vista;
 
 import javax.naming.OperationNotSupportedException;
@@ -16,25 +17,25 @@ import java.util.List;
  */
 public class Controlador {
 
-    private Modelo modelo;
+    private ModeloCascada modeloCascada;
     private Vista vista;
 
     /**
      * Constructor que inicializa el controlador con el modelo y la vista.
      * Establece la comunicación bidireccional entre los componentes.
      * 
-     * @param modelo Modelo que gestiona los datos del taller
+     * @param modeloCascada Modelo que gestiona los datos del taller
      * @param vista Vista que gestiona la interfaz de usuario
      * @throws IllegalArgumentException Si modelo o vista son nulos
      */
-    public Controlador(Modelo modelo, Vista vista) {
-        if (modelo == null) {
+    public Controlador(ModeloCascada modeloCascada, Vista vista) {
+        if (modeloCascada == null) {
             throw new IllegalArgumentException("El modelo no puede ser nulo.");
         }
         if (vista == null) {
             throw new IllegalArgumentException("La vista no puede ser nula.");
         }
-        this.modelo = modelo;
+        this.modeloCascada = modeloCascada;
         this.vista = vista;
         this.vista.setControlador(this);
     }
@@ -44,7 +45,7 @@ public class Controlador {
      * Prepara el sistema para comenzar las operaciones.
      */
     public void comenzar() {
-        modelo.comenzar();
+        modeloCascada.comenzar();
         vista.comenzar();
     }
 
@@ -53,7 +54,7 @@ public class Controlador {
      * Libera recursos y muestra mensajes de finalización.
      */
     public void terminar() {
-        modelo.terminar();
+        modeloCascada.terminar();
         vista.terminar();
     }
 
@@ -65,7 +66,7 @@ public class Controlador {
      * @throws OperationNotSupportedException Si el cliente ya existe o es inválido
      */
     public void insertar(Cliente cliente) throws OperationNotSupportedException {
-        modelo.insertar(cliente);
+        modeloCascada.insertar(cliente);
     }
 
     /**
@@ -76,7 +77,7 @@ public class Controlador {
      * @throws OperationNotSupportedException Si el vehículo ya existe o es inválido
      */
     public void insertar(Vehiculo vehiculo) throws OperationNotSupportedException {
-        modelo.insertar(vehiculo);
+        modeloCascada.insertar(vehiculo);
     }
 
     /**
@@ -88,20 +89,20 @@ public class Controlador {
      */
     public void insertar(Revision revision) throws OperationNotSupportedException {
         // Buscar el cliente real usando el DNI del cliente de búsqueda
-        Cliente clienteReal = modelo.buscar(revision.getCliente());
+        Cliente clienteReal = modeloCascada.buscar(revision.getCliente());
         if (clienteReal == null) {
             throw new OperationNotSupportedException("No existe un cliente con el DNI proporcionado.");
         }
         
         // Buscar el vehículo real usando la matrícula del vehículo de búsqueda
-        Vehiculo vehiculoReal = modelo.buscar(revision.getVehiculo());
+        Vehiculo vehiculoReal = modeloCascada.buscar(revision.getVehiculo());
         if (vehiculoReal == null) {
             throw new OperationNotSupportedException("No existe un vehículo con la matrícula proporcionada.");
         }
         
         // Crear la revisión con el cliente y vehículo reales
         Revision revisionReal = new Revision(clienteReal, vehiculoReal, revision.getFechaInicio());
-        modelo.insertar(revisionReal);
+        modeloCascada.insertar(revisionReal);
     }
 
     /**
@@ -112,7 +113,7 @@ public class Controlador {
      * @return Cliente encontrado o null si no existe
      */
     public Cliente buscar(Cliente cliente) {
-        return modelo.buscar(cliente);
+        return modeloCascada.buscar(cliente);
     }
 
     /**
@@ -123,7 +124,7 @@ public class Controlador {
      * @return Vehículo encontrado o null si no existe
      */
     public Vehiculo buscar(Vehiculo vehiculo) {
-        return modelo.buscar(vehiculo);
+        return modeloCascada.buscar(vehiculo);
     }
 
     /**
@@ -134,7 +135,7 @@ public class Controlador {
      * @return Revisión encontrada o null si no existe
      */
     public Revision buscar(Revision revision) {
-        return modelo.buscar(revision);
+        return modeloCascada.buscar(revision);
     }
 
     /**
@@ -148,7 +149,7 @@ public class Controlador {
      * @throws OperationNotSupportedException Si el cliente no existe o los datos son inválidos
      */
     public Cliente modificar(Cliente cliente, String nombre, String telefono) throws OperationNotSupportedException {
-        return modelo.modificar(cliente, nombre, telefono);
+        return modeloCascada.modificar(cliente, nombre, telefono);
     }
 
     /**
@@ -159,7 +160,7 @@ public class Controlador {
      * @throws OperationNotSupportedException Si el cliente no existe
      */
     public void borrar(Cliente cliente) throws OperationNotSupportedException {
-        modelo.borrar(cliente);
+        modeloCascada.borrar(cliente);
     }
 
     /**
@@ -170,7 +171,7 @@ public class Controlador {
      * @throws OperationNotSupportedException Si el vehículo no existe
      */
     public void borrar(Vehiculo vehiculo) throws OperationNotSupportedException {
-        modelo.borrar(vehiculo);
+        modeloCascada.borrar(vehiculo);
     }
 
     /**
@@ -178,10 +179,12 @@ public class Controlador {
      * Delega la operación al modelo para su procesamiento.
      * 
      * @param revision Revisión a borrar
+     * @return Revisión borrada
      * @throws OperationNotSupportedException Si la revisión no existe
      */
-    public void borrar(Revision revision) throws OperationNotSupportedException {
-        modelo.borrar(revision);
+    public Revision borrar(Revision revision) throws OperationNotSupportedException {
+        Trabajo borrado = modeloCascada.borrar((Trabajo) revision);
+        return (Revision) borrado;
     }
 
     /**
@@ -191,7 +194,7 @@ public class Controlador {
      * @return Lista de clientes
      */
     public List<Cliente> getClientes() {
-        return modelo.getClientes();
+        return modeloCascada.getClientes();
     }
 
     /**
@@ -201,7 +204,7 @@ public class Controlador {
      * @return Lista de vehículos
      */
     public List<Vehiculo> getVehiculos() {
-        return modelo.getVehiculos();
+        return modeloCascada.getVehiculos();
     }
 
     /**
@@ -211,7 +214,14 @@ public class Controlador {
      * @return Lista de revisiones
      */
     public List<Revision> getRevisiones() {
-        return modelo.getRevisiones();
+        List<Trabajo> trabajos = modeloCascada.getTrabajos();
+        List<Revision> revisiones = new java.util.ArrayList<>();
+        for (Trabajo trabajo : trabajos) {
+            if (trabajo instanceof Revision) {
+                revisiones.add((Revision) trabajo);
+            }
+        }
+        return revisiones;
     }
 
     /**
@@ -222,7 +232,14 @@ public class Controlador {
      * @return Lista de revisiones del cliente
      */
     public List<Revision> getRevisiones(Cliente cliente) {
-        return modelo.getRevisiones(cliente);
+        List<Trabajo> trabajos = modeloCascada.getTrabajos(cliente);
+        List<Revision> revisiones = new java.util.ArrayList<>();
+        for (Trabajo trabajo : trabajos) {
+            if (trabajo instanceof Revision) {
+                revisiones.add((Revision) trabajo);
+            }
+        }
+        return revisiones;
     }
 
     /**
@@ -233,7 +250,14 @@ public class Controlador {
      * @return Lista de revisiones del vehículo
      */
     public List<Revision> getRevisiones(Vehiculo vehiculo) {
-        return modelo.getRevisiones(vehiculo);
+        List<Trabajo> trabajos = modeloCascada.getTrabajos(vehiculo);
+        List<Revision> revisiones = new java.util.ArrayList<>();
+        for (Trabajo trabajo : trabajos) {
+            if (trabajo instanceof Revision) {
+                revisiones.add((Revision) trabajo);
+            }
+        }
+        return revisiones;
     }
 
     /**
@@ -246,7 +270,7 @@ public class Controlador {
      * @throws OperationNotSupportedException Si la revisión no existe o está cerrada
      */
     public Revision anadirHoras(Revision revision, int horas) throws OperationNotSupportedException {
-        return modelo.anadirHoras(revision, horas);
+        return modeloCascada.anadirHoras(revision, horas);
     }
 
     /**
@@ -259,7 +283,7 @@ public class Controlador {
      * @throws OperationNotSupportedException Si la revisión no existe o está cerrada
      */
     public Revision anadirPrecioMaterial(Revision revision, float precioMaterial) {
-        return modelo.anadirPrecioMaterial(revision, precioMaterial);
+        return modeloCascada.anadirPrecioMaterial(revision, precioMaterial);
     }
 
     /**
@@ -272,6 +296,7 @@ public class Controlador {
      * @throws OperationNotSupportedException Si la revisión no existe o la fecha es inválida
      */
     public Revision cerrar(Revision revision, java.time.LocalDate fechaCierre) throws OperationNotSupportedException {
-        return modelo.cerrar(revision, fechaCierre);
+        Trabajo cerrado = modeloCascada.cerrar((Trabajo) revision, fechaCierre);
+        return (Revision) cerrado;
     }
 }

@@ -1,5 +1,6 @@
 package org.iesalandalus.programacion.tallermecanico.modelo.negocio;
 
+import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepcion;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
@@ -16,5 +17,5 @@ public interface ITrabajos {
     Trabajo anadirPrecioMaterial(Trabajo trabajo, float precioMaterial);
     Trabajo cerrar(Trabajo trabajo, LocalDate fechaFin);
     Trabajo buscar(Trabajo trabajo);
-    Trabajo borrar(Trabajo trabajo);
+    Trabajo borrar(Trabajo trabajo) throws TallerMecanicoExcepcion;
 }

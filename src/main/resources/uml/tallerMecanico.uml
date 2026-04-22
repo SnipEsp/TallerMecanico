@@ -9,7 +9,7 @@
         <packagedElement xmi:type="uml:Package" xmi:id="_jW3moMWLEe6GV74yg1DxAg" name="iesalandalus">
           <packagedElement xmi:type="uml:Package" xmi:id="_jW40wMWLEe6GV74yg1DxAg" name="programacion">
             <packagedElement xmi:type="uml:Package" xmi:id="_jW5b0MWLEe6GV74yg1DxAg" name="tallermecanico">
-              <packagedElement xmi:type="uml:Package" xmi:id="_jW6p8MWLEe6GV74yg1DxAg" name="modelo">
+              <packagedElement xmi:type="uml:Package" xmi:id="_jW6p8MWLEe6GV74yg1DxAg" name="modeloCascada">
                 <packagedElement xmi:type="uml:Package" xmi:id="_jW8fIMWLEe6GV74yg1DxAg" name="dominio">
                   <packagedElement xmi:type="uml:Class" xmi:id="_jXDz4MWLEe6GV74yg1DxAg" name="Cliente" visibility="public">
                     <ownedAttribute xmi:type="uml:Property" xmi:id="_jere0MWLEe6GV74yg1DxAg" name="ER_NOMBRE" visibility="private" isLeaf="true" isStatic="true" type="_jXQBIMWLEe6GV74yg1DxAg" isUnique="false">
@@ -199,13 +199,13 @@
                       </defaultValue>
                     </ownedAttribute>
                     <ownedAttribute xmi:type="uml:Property" xmi:id="__VAFcMWLEe6GV74yg1DxAg" name="marca" visibility="private" type="_jXQBIMWLEe6GV74yg1DxAg" isUnique="false"/>
-                    <ownedAttribute xmi:type="uml:Property" xmi:id="__VBTkMWLEe6GV74yg1DxAg" name="modelo" visibility="private" type="_jXQBIMWLEe6GV74yg1DxAg" isUnique="false"/>
+                    <ownedAttribute xmi:type="uml:Property" xmi:id="__VBTkMWLEe6GV74yg1DxAg" name="modeloCascada" visibility="private" type="_jXQBIMWLEe6GV74yg1DxAg" isUnique="false"/>
                     <ownedAttribute xmi:type="uml:Property" xmi:id="__VChsMWLEe6GV74yg1DxAg" name="matricula" visibility="private" type="_jXQBIMWLEe6GV74yg1DxAg" isUnique="false"/>
                     <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="__VNg0MWLEe6GV74yg1DxAg" name="Vehiculo" specification="__VDv0MWLEe6GV74yg1DxAg">
                       <language>JAVA</language>
                       <body>
     valoidarMarca(marca);
-    validarModelo(modelo);
+    validarModelo(modeloCascada);
     validarMatricula(matricula);
 </body>
                     </ownedBehavior>
@@ -221,9 +221,9 @@
                     <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="__VTncMWLEe6GV74yg1DxAg" name="validarModelo" specification="__VRyQMWLEe6GV74yg1DxAg">
                       <language>JAVA</language>
                       <body>
-    Objects.requireNonNull(modelo, &quot;El modelo no puede ser nulo.&quot;);
-    if (modelo.isBlank()) {
-        throw new IllegalArgumentException(&quot;El modelo no puede estar en blanco.&quot;);
+    Objects.requireNonNull(modeloCascada, &quot;El modeloCascada no puede ser nulo.&quot;);
+    if (modeloCascada.isBlank()) {
+        throw new IllegalArgumentException(&quot;El modeloCascada no puede estar en blanco.&quot;);
     }
 </body>
                     </ownedBehavior>
@@ -258,19 +258,19 @@
                     <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="__VhC0MWLEe6GV74yg1DxAg" name="toString" specification="__Vf0scWLEe6GV74yg1DxAg">
                       <language>JAVA</language>
                       <body>
-    return String.format(&quot;%s %s - %s&quot;, marca, modelo, matricula);
+    return String.format(&quot;%s %s - %s&quot;, marca, modeloCascada, matricula);
 </body>
                     </ownedBehavior>
                     <ownedOperation xmi:type="uml:Operation" xmi:id="__VDv0MWLEe6GV74yg1DxAg" name="Vehiculo" visibility="public" method="__VNg0MWLEe6GV74yg1DxAg">
                       <ownedParameter xmi:type="uml:Parameter" xmi:id="__VKdgMWLEe6GV74yg1DxAg" name="marca" type="_jXQBIMWLEe6GV74yg1DxAg"/>
-                      <ownedParameter xmi:type="uml:Parameter" xmi:id="__VLroMWLEe6GV74yg1DxAg" name="modelo" type="_jXQBIMWLEe6GV74yg1DxAg"/>
+                      <ownedParameter xmi:type="uml:Parameter" xmi:id="__VLroMWLEe6GV74yg1DxAg" name="modeloCascada" type="_jXQBIMWLEe6GV74yg1DxAg"/>
                       <ownedParameter xmi:type="uml:Parameter" xmi:id="__VM5wMWLEe6GV74yg1DxAg" name="matricula" type="_jXQBIMWLEe6GV74yg1DxAg"/>
                     </ownedOperation>
                     <ownedOperation xmi:type="uml:Operation" xmi:id="__VOu8MWLEe6GV74yg1DxAg" name="validarMarca" visibility="private" method="__VQkIMWLEe6GV74yg1DxAg">
                       <ownedParameter xmi:type="uml:Parameter" xmi:id="__VP9EMWLEe6GV74yg1DxAg" name="marca" type="_jXQBIMWLEe6GV74yg1DxAg"/>
                     </ownedOperation>
                     <ownedOperation xmi:type="uml:Operation" xmi:id="__VRyQMWLEe6GV74yg1DxAg" name="validarModelo" visibility="private" method="__VTncMWLEe6GV74yg1DxAg">
-                      <ownedParameter xmi:type="uml:Parameter" xmi:id="__VSZUMWLEe6GV74yg1DxAg" name="modelo" type="_jXQBIMWLEe6GV74yg1DxAg"/>
+                      <ownedParameter xmi:type="uml:Parameter" xmi:id="__VSZUMWLEe6GV74yg1DxAg" name="modeloCascada" type="_jXQBIMWLEe6GV74yg1DxAg"/>
                     </ownedOperation>
                     <ownedOperation xmi:type="uml:Operation" xmi:id="__VUOgMWLEe6GV74yg1DxAg" name="validarMatricula" visibility="private" method="__VWDsMWLEe6GV74yg1DxAg">
                       <ownedParameter xmi:type="uml:Parameter" xmi:id="__VVcoMWLEe6GV74yg1DxAg" name="matricula" type="_jXQBIMWLEe6GV74yg1DxAg"/>
@@ -1793,11 +1793,11 @@
                   </ownedOperation>
                 </packagedElement>
                 <packagedElement xmi:type="uml:Class" xmi:id="_nEUegM78Ee6dsIuvGKkUNw" name="Controlador" visibility="public">
-                  <ownedAttribute xmi:type="uml:Property" xmi:id="_nEZ-EM78Ee6dsIuvGKkUNw" name="modelo" visibility="private" isLeaf="true" type="_0Z-I0My-Ee6KuY7X7xWG0g" isUnique="false" aggregation="composite" association="_-b4H4M8JEe6dsIuvGKkUNw"/>
+                  <ownedAttribute xmi:type="uml:Property" xmi:id="_nEZ-EM78Ee6dsIuvGKkUNw" name="modeloCascada" visibility="private" isLeaf="true" type="_0Z-I0My-Ee6KuY7X7xWG0g" isUnique="false" aggregation="composite" association="_-b4H4M8JEe6dsIuvGKkUNw"/>
                   <ownedAttribute xmi:type="uml:Property" xmi:id="_nEbMMM78Ee6dsIuvGKkUNw" name="vista" visibility="private" isLeaf="true" type="_4VwxIM78Ee6dsIuvGKkUNw" isUnique="false" aggregation="composite" association="__jt5sM8JEe6dsIuvGKkUNw"/>
                   <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_nEYv8M78Ee6dsIuvGKkUNw" name="Controlador implements IControlador" client="_nEUegM78Ee6dsIuvGKkUNw" supplier="_gbQf0M78Ee6dsIuvGKkUNw" contract="_gbQf0M78Ee6dsIuvGKkUNw"/>
                   <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_nEh54M78Ee6dsIuvGKkUNw" name="Controlador" specification="_nEbzQM78Ee6dsIuvGKkUNw">
-                    <ownedParameter xmi:type="uml:Parameter" xmi:id="_n56zUM8IEe6dsIuvGKkUNw" name="modelo">
+                    <ownedParameter xmi:type="uml:Parameter" xmi:id="_n56zUM8IEe6dsIuvGKkUNw" name="modeloCascada">
                       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_n57aYM8IEe6dsIuvGKkUNw" value="1"/>
                       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_n57aYc8IEe6dsIuvGKkUNw" value="1"/>
                     </ownedParameter>
@@ -1807,9 +1807,9 @@
                     </ownedParameter>
                     <language>JAVA</language>
                     <body>
-    Objects.requireNonNull(modelo, &quot;ERROR: El modelo no puede ser nulo.&quot;);
+    Objects.requireNonNull(modeloCascada, &quot;ERROR: El modeloCascada no puede ser nulo.&quot;);
     Objects.requireNonNull(vista, &quot;ERROR: La vista no puede ser nula.&quot;);
-    this.modelo = modelo;
+    this.modeloCascada = modeloCascada;
     this.vista = vista;
     this.vista.getGestorEventos().suscribir(this, Evento.values());
 </body>
@@ -1817,14 +1817,14 @@
                   <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_nEjIAM78Ee6dsIuvGKkUNw" name="comenzar" specification="_nEig8M78Ee6dsIuvGKkUNw">
                     <language>JAVA</language>
                     <body>
-    modelo.comenzar();
+    modeloCascada.comenzar();
     vista.comenzar();
 </body>
                   </ownedBehavior>
                   <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_nEjvEc78Ee6dsIuvGKkUNw" name="terminar" specification="_nEjvEM78Ee6dsIuvGKkUNw">
                     <language>JAVA</language>
                     <body>
-    modelo.terminar();
+    modeloCascada.terminar();
     vista.terminar();
 </body>
                   </ownedBehavior>
@@ -1838,25 +1838,25 @@
 //        try {
 //            String resultado = &quot;&quot;;
 //            switch (evento) {
-//                case INSERTAR_CLIENTE -> { modelo.insertar(vista.leerCliente()); resultado = &quot;Cliente insertado correctamente.&quot;; }
-//                case INSERTAR_VEHICULO -> { modelo.insertar(vista.leerVehiculo()); resultado = &quot;Vehículo insertado correctamente&quot;; }
-//                case INSERTAR_REVISION -> { modelo.insertar(vista.leerRevision()); resultado = &quot;Trabajo de revisión insertado correctamente.&quot;; }
-//                case INSERTAR_MECANICO -> { modelo.insertar(vista.leerMecanico()); resultado = &quot;Trabajo mecánico insertado correctamente.&quot;; }
-//                case BUSCAR_CLIENTE -> vista.mostrarCliente(modelo.buscar(vista.leerClienteDni()));
-//                case BUSCAR_VEHICULO -> vista.mostrarVehiculo(modelo.buscar(vista.leerVehiculoMatricula()));
-//                case BUSCAR_TRABAJO -> vista.mostrarTrabajo(modelo.buscar(vista.leerRevision()));
-//                case MODIFICAR_CLIENTE -> resultado = (modelo.modificar(vista.leerClienteDni(), vista.leerNuevoNombre(), vista.leerNuevoTelefono())) ? &quot;El cliente se ha modificado correctamente.&quot; : &quot;El cliente no se ha modificado.&quot;;
-//                case ANADIR_HORAS_TRABAJO -> { modelo.anadirHoras(vista.leerTrabajoVehiculo(), vista.leerHoras()); resultado = &quot;Horas añadidas correctamente.&quot;; }
-//                case ANADIR_PRECIO_MATERIAL_TRABAJO -> { modelo.anadirPrecioMaterial(vista.leerTrabajoVehiculo(), vista.leerPrecioMaterial()); resultado = &quot;Precio del material añadido correctamente.&quot;; }
-//                case CERRAR_TRABAJO -> { modelo.cerrar(vista.leerTrabajoVehiculo(), vista.leerFechaCierre()); resultado = &quot;Trabajo cerrado correctamente.&quot;; }
-//                case BORRAR_CLIENTE -> { modelo.borrar(vista.leerClienteDni()); resultado = &quot;Cliente eliminado correctamente.&quot;; }
-//                case BORRAR_VEHICULO -> { modelo.borrar(vista.leerVehiculoMatricula()); resultado = &quot;Vehículo eliminado correctamente.&quot;; }
-//                case BORRAR_TRABAJO -> { modelo.borrar(vista.leerRevision()); resultado = &quot;Trabajo eliminado correctamente.&quot;; }
-//                case LISTAR_CLIENTES -> vista.mostrarClientes(modelo.getClientes());
-//                case LISTAR_VEHICULOS -> vista.mostrarVehiculos(modelo.getVehiculos());
-//                case LISTAR_TRABAJOS -> vista.mostrarTrabajos(modelo.getTrabajos());
-//                case LISTAR_TRABAJOS_CLIENTE -> vista.mostrarTrabajosCliente(modelo.getTrabajos(vista.leerClienteDni()));
-//                case LISTAR_TRABAJOS_VEHICULO -> vista.mostrarTrabajosVehiculo(modelo.getTrabajos(vista.leerVehiculoMatricula()));
+//                case INSERTAR_CLIENTE -> { modeloCascada.insertar(vista.leerCliente()); resultado = &quot;Cliente insertado correctamente.&quot;; }
+//                case INSERTAR_VEHICULO -> { modeloCascada.insertar(vista.leerVehiculo()); resultado = &quot;Vehículo insertado correctamente&quot;; }
+//                case INSERTAR_REVISION -> { modeloCascada.insertar(vista.leerRevision()); resultado = &quot;Trabajo de revisión insertado correctamente.&quot;; }
+//                case INSERTAR_MECANICO -> { modeloCascada.insertar(vista.leerMecanico()); resultado = &quot;Trabajo mecánico insertado correctamente.&quot;; }
+//                case BUSCAR_CLIENTE -> vista.mostrarCliente(modeloCascada.buscar(vista.leerClienteDni()));
+//                case BUSCAR_VEHICULO -> vista.mostrarVehiculo(modeloCascada.buscar(vista.leerVehiculoMatricula()));
+//                case BUSCAR_TRABAJO -> vista.mostrarTrabajo(modeloCascada.buscar(vista.leerRevision()));
+//                case MODIFICAR_CLIENTE -> resultado = (modeloCascada.modificar(vista.leerClienteDni(), vista.leerNuevoNombre(), vista.leerNuevoTelefono())) ? &quot;El cliente se ha modificado correctamente.&quot; : &quot;El cliente no se ha modificado.&quot;;
+//                case ANADIR_HORAS_TRABAJO -> { modeloCascada.anadirHoras(vista.leerTrabajoVehiculo(), vista.leerHoras()); resultado = &quot;Horas añadidas correctamente.&quot;; }
+//                case ANADIR_PRECIO_MATERIAL_TRABAJO -> { modeloCascada.anadirPrecioMaterial(vista.leerTrabajoVehiculo(), vista.leerPrecioMaterial()); resultado = &quot;Precio del material añadido correctamente.&quot;; }
+//                case CERRAR_TRABAJO -> { modeloCascada.cerrar(vista.leerTrabajoVehiculo(), vista.leerFechaCierre()); resultado = &quot;Trabajo cerrado correctamente.&quot;; }
+//                case BORRAR_CLIENTE -> { modeloCascada.borrar(vista.leerClienteDni()); resultado = &quot;Cliente eliminado correctamente.&quot;; }
+//                case BORRAR_VEHICULO -> { modeloCascada.borrar(vista.leerVehiculoMatricula()); resultado = &quot;Vehículo eliminado correctamente.&quot;; }
+//                case BORRAR_TRABAJO -> { modeloCascada.borrar(vista.leerRevision()); resultado = &quot;Trabajo eliminado correctamente.&quot;; }
+//                case LISTAR_CLIENTES -> vista.mostrarClientes(modeloCascada.getClientes());
+//                case LISTAR_VEHICULOS -> vista.mostrarVehiculos(modeloCascada.getVehiculos());
+//                case LISTAR_TRABAJOS -> vista.mostrarTrabajos(modeloCascada.getTrabajos());
+//                case LISTAR_TRABAJOS_CLIENTE -> vista.mostrarTrabajosCliente(modeloCascada.getTrabajos(vista.leerClienteDni()));
+//                case LISTAR_TRABAJOS_VEHICULO -> vista.mostrarTrabajosVehiculo(modeloCascada.getTrabajos(vista.leerVehiculoMatricula()));
 //                case SALIR -> terminar();
 //            }
 //            if (!resultado.isBlank()) {
@@ -1868,7 +1868,7 @@
 </body>
                   </ownedBehavior>
                   <ownedOperation xmi:type="uml:Operation" xmi:id="_nEbzQM78Ee6dsIuvGKkUNw" name="Controlador" visibility="public" method="_nEh54M78Ee6dsIuvGKkUNw">
-                    <ownedParameter xmi:type="uml:Parameter" xmi:id="_nEgEsM78Ee6dsIuvGKkUNw" name="modelo" type="_W8MBsM8aEe6dsIuvGKkUNw"/>
+                    <ownedParameter xmi:type="uml:Parameter" xmi:id="_nEgEsM78Ee6dsIuvGKkUNw" name="modeloCascada" type="_W8MBsM8aEe6dsIuvGKkUNw"/>
                     <ownedParameter xmi:type="uml:Parameter" xmi:id="_nEhS0M78Ee6dsIuvGKkUNw" name="vista" type="_ouu2QM8aEe6dsIuvGKkUNw"/>
                   </ownedOperation>
                   <ownedOperation xmi:type="uml:Operation" xmi:id="_nEig8M78Ee6dsIuvGKkUNw" name="comenzar" visibility="public" method="_nEjIAM78Ee6dsIuvGKkUNw"/>
@@ -2080,9 +2080,9 @@
                       <language>JAVA</language>
                       <body>
     String marca = Consola.leerCadena(&quot;Introduce la marca: &quot;);
-    String modelo = Consola.leerCadena(&quot;Introduce el modelo: &quot;);
+    String modeloCascada = Consola.leerCadena(&quot;Introduce el modeloCascada: &quot;);
     String matricula = Consola.leerCadena(&quot;Introduce la matrícula: &quot;);
-    return new Vehiculo(marca, modelo, matricula);
+    return new Vehiculo(marca, modeloCascada, matricula);
 </body>
                     </ownedBehavior>
                     <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_FbeDIM79Ee6dsIuvGKkUNw" name="leerVehiculoMatricula" specification="_Fbc1AM79Ee6dsIuvGKkUNw">
@@ -2756,9 +2756,9 @@
                 <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_iBU5kMWXEe6PL5kubjCEzQ" name="main" specification="_iBLvoMWXEe6PL5kubjCEzQ">
                   <language>JAVA</language>
                   <body>
-    Modelo modelo = new Modelo();
+    Modelo modeloCascada = new Modelo();
     Vista vista = new Vista();
-    Controlador controlador = new Controlador(modelo, vista);
+    Controlador controlador = new Controlador(modeloCascada, vista);
     controlador.comenzar();
 </body>
                 </ownedBehavior>
@@ -2824,7 +2824,7 @@
               <packagedElement xmi:type="uml:Package" xmi:id="_XYHG4MWREe6GV74yg1DxAg" name="controlador">
                 <packagedElement xmi:type="uml:Class" xmi:id="_XYHG4cWREe6GV74yg1DxAg" name="Controlador"/>
               </packagedElement>
-              <packagedElement xmi:type="uml:Package" xmi:id="_zA75UMy-Ee6KuY7X7xWG0g" name="modelo">
+              <packagedElement xmi:type="uml:Package" xmi:id="_zA75UMy-Ee6KuY7X7xWG0g" name="modeloCascada">
                 <packagedElement xmi:type="uml:Package" xmi:id="_zA8gYMy-Ee6KuY7X7xWG0g" name="negocio">
                   <packagedElement xmi:type="uml:Class" xmi:id="_zA8gYcy-Ee6KuY7X7xWG0g" name="FabricaFuenteDatos"/>
                   <packagedElement xmi:type="uml:Interface" xmi:id="_jjC9EczAEe6KuY7X7xWG0g" name="IClientes"/>
@@ -2881,7 +2881,7 @@
         </packagedElement>
       </packagedElement>
       <packagedElement xmi:type="uml:Package" xmi:id="__mg58MWQEe6GV74yg1DxAg" name="controlador"/>
-      <packagedElement xmi:type="uml:Package" xmi:id="_TzrBsMWPEe6GV74yg1DxAg" name="modelo">
+      <packagedElement xmi:type="uml:Package" xmi:id="_TzrBsMWPEe6GV74yg1DxAg" name="modeloCascada">
         <ownedComment xmi:type="uml:Comment" xmi:id="_NZqC4M8XEe6dsIuvGKkUNw" annotatedElement="_zA5dEMy-Ee6KuY7X7xWG0g">
           <body>--------------------------------
 + &lt;&lt;abstract>> crear(fabricaFuenteDatos: FabricaFuenteDatos): Modelo</body>
@@ -3156,9 +3156,9 @@
   <record:Record xmi:id="_ickPoMWNEe6GV74yg1DxAg" base_Class="_rnFwYMWLEe6GV74yg1DxAg"/>
   <Codegen:External xmi:id="_L0RQQMWREe6GV74yg1DxAg" name="java.util.Map" base_Classifier="_L0OM8cWREe6GV74yg1DxAg"/>
   <Codegen:External xmi:id="_XYI8EMWREe6GV74yg1DxAg" name="org.iesalandalus.programacion.tallermecanico.controlador.Controlador" base_Classifier="_XYHG4cWREe6GV74yg1DxAg"/>
-  <Codegen:External xmi:id="_zBB_8My-Ee6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modelo.negocio.FabricaFuenteDatos" base_Classifier="_zA8gYcy-Ee6KuY7X7xWG0g"/>
-  <Codegen:External xmi:id="_0aP1oMy-Ee6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo" base_Classifier="_0aMyUMy-Ee6KuY7X7xWG0g"/>
-  <Codegen:External xmi:id="_cp6-kMy_Ee6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modelo.Modelo" base_Classifier="_0Z-I0My-Ee6KuY7X7xWG0g"/>
+  <Codegen:External xmi:id="_zBB_8My-Ee6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modeloCascada.negocio.FabricaFuenteDatos" base_Classifier="_zA8gYcy-Ee6KuY7X7xWG0g"/>
+  <Codegen:External xmi:id="_0aP1oMy-Ee6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modeloCascada.dominio.Trabajo" base_Classifier="_0aMyUMy-Ee6KuY7X7xWG0g"/>
+  <Codegen:External xmi:id="_cp6-kMy_Ee6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modelo.cascada.ModeloCascada.Modelo" base_Classifier="_0Z-I0My-Ee6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_cqMEUMy_Ee6KuY7X7xWG0g" name="IFuenteDatos" base_Classifier="_cqKPIMy_Ee6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_cqOgkMy_Ee6KuY7X7xWG0g" name="FabricaFuenteDatos" base_Classifier="_cqMrYcy_Ee6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_cqVOQMy_Ee6KuY7X7xWG0g" name="Cliente" base_Classifier="_cqUAIMy_Ee6KuY7X7xWG0g"/>
@@ -3171,16 +3171,16 @@
   <Codegen:External xmi:id="_HOwoEMzAEe6KuY7X7xWG0g" name="IVehiculos" base_Classifier="_BUheQMzAEe6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_HOx2MMzAEe6KuY7X7xWG0g" name="ITrabajos" base_Classifier="__24bkMy_Ee6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_Ihc_AMzAEe6KuY7X7xWG0g" name="IFuenteDatos" base_Classifier="_HOsWoMzAEe6KuY7X7xWG0g"/>
-  <Codegen:External xmi:id="_jjEyQMzAEe6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes" base_Classifier="_jjC9EczAEe6KuY7X7xWG0g"/>
+  <Codegen:External xmi:id="_jjEyQMzAEe6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modeloCascada.negocio.IClientes" base_Classifier="_jjC9EczAEe6KuY7X7xWG0g"/>
   <standard:Create xmi:id="_jjIcoMzAEe6KuY7X7xWG0g" base_BehavioralFeature="_jjGncszAEe6KuY7X7xWG0g"/>
-  <Codegen:External xmi:id="_yh2esMzAEe6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modelo.negocio.ITrabajos" base_Classifier="_yh13oMzAEe6KuY7X7xWG0g"/>
+  <Codegen:External xmi:id="_yh2esMzAEe6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modeloCascada.negocio.ITrabajos" base_Classifier="_yh13oMzAEe6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_yh3s0MzAEe6KuY7X7xWG0g" name="Trabajo" base_Classifier="_yh3FwMzAEe6KuY7X7xWG0g"/>
   <standard:Create xmi:id="_yh468MzAEe6KuY7X7xWG0g" base_BehavioralFeature="_yh4T48zAEe6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_yh6wIMzAEe6KuY7X7xWG0g" name="Cliente" base_Classifier="_yh6JEMzAEe6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_yh7-QMzAEe6KuY7X7xWG0g" name="Vehiculo" base_Classifier="_yh7XMszAEe6KuY7X7xWG0g"/>
-  <Codegen:External xmi:id="_1eGNYMzAEe6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modelo.negocio.IVehiculos" base_Classifier="_1eEYMMzAEe6KuY7X7xWG0g"/>
+  <Codegen:External xmi:id="_1eGNYMzAEe6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modeloCascada.negocio.IVehiculos" base_Classifier="_1eEYMMzAEe6KuY7X7xWG0g"/>
   <standard:Create xmi:id="_1eJ3wMzAEe6KuY7X7xWG0g" base_BehavioralFeature="_1eICkszAEe6KuY7X7xWG0g"/>
-  <Codegen:External xmi:id="_2bnlkMzAEe6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modelo.negocio.IFuenteDatos" base_Classifier="_2blwYMzAEe6KuY7X7xWG0g"/>
+  <Codegen:External xmi:id="_2bnlkMzAEe6KuY7X7xWG0g" name="org.iesalandalus.programacion.tallermecanico.modeloCascada.negocio.IFuenteDatos" base_Classifier="_2blwYMzAEe6KuY7X7xWG0g"/>
   <Codegen:External xmi:id="_8gIBgMzHEe66S_aNl6MGrQ" name="Trabajo" base_Classifier="_8gE-MMzHEe66S_aNl6MGrQ"/>
   <standard:Create xmi:id="_8gLE0MzHEe66S_aNl6MGrQ" base_BehavioralFeature="_8gKdwMzHEe66S_aNl6MGrQ"/>
   <standard:Create xmi:id="_8gNhEMzHEe66S_aNl6MGrQ" base_BehavioralFeature="_8gM6AczHEe66S_aNl6MGrQ"/>

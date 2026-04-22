@@ -1,6 +1,7 @@
 package org.iesalandalus.programacion.tallermecanico.modelo.negocio.memoria;
 
 
+import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepcion;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
@@ -13,6 +14,8 @@ import java.util.Objects;
 
 public class Trabajos implements ITrabajos {
     private final List<Trabajo> coleccionTrabajos;
+    public static final String VEHICULO_NULO = "El vehículo no puede ser nulo.";
+    public static final String TRABAJO_NULO = "El trabajo no puede ser nulo.";
 
     public Trabajos() {
         coleccionTrabajos = new ArrayList<>();
@@ -34,7 +37,7 @@ public class Trabajos implements ITrabajos {
     }
 
     public Trabajo[] get(Vehiculo vehiculo) {
-        Objects.requireNonNull(vehiculo, "El vehículo no puede ser nulo.");
+        Objects.requireNonNull(vehiculo, VEHICULO_NULO);
         List<Trabajo> trabajosVehiculo = new ArrayList<>();
         for (Trabajo trabajo : coleccionTrabajos) {
             if (trabajo.getVehiculo().equals(vehiculo)) {
@@ -46,7 +49,7 @@ public class Trabajos implements ITrabajos {
 
     private void comprobarTrabajo(Cliente cliente, Vehiculo vehiculo, LocalDate fechaInicio) {
         Objects.requireNonNull(cliente, "El cliente no puede ser nulo.");
-        Objects.requireNonNull(vehiculo, "El vehículo no puede ser nulo.");
+        Objects.requireNonNull(vehiculo, VEHICULO_NULO);
         Objects.requireNonNull(fechaInicio, "La fecha de inicio no puede ser nula.");
         for (Trabajo trabajo : coleccionTrabajos) {
             if (!trabajo.estaCerrado() && trabajo.getCliente().equals(cliente) && trabajo.getVehiculo().equals(vehiculo)) {
@@ -56,7 +59,7 @@ public class Trabajos implements ITrabajos {
     }
 
     public Trabajo getTrabajoAbierto(Vehiculo vehiculo) {
-        Objects.requireNonNull(vehiculo, "El vehículo no puede ser nulo.");
+        Objects.requireNonNull(vehiculo, VEHICULO_NULO);
         for (Trabajo trabajo : coleccionTrabajos) {
             if (!trabajo.estaCerrado() && trabajo.getVehiculo().equals(vehiculo)) {
                 return trabajo;
@@ -66,13 +69,13 @@ public class Trabajos implements ITrabajos {
     }
 
     public void insertar(Trabajo trabajo) {
-        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+        Objects.requireNonNull(trabajo, TRABAJO_NULO);
         comprobarTrabajo(trabajo.getCliente(), trabajo.getVehiculo(), trabajo.getFechaInicio());
         coleccionTrabajos.add(trabajo);
     }
 
     public Trabajo anadirHoras(Trabajo trabajo, int horas) {
-        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+        Objects.requireNonNull(trabajo, TRABAJO_NULO);
         Trabajo trabajoAbierto = getTrabajoAbierto(trabajo.getVehiculo());
         if (trabajoAbierto == null) {
             throw new IllegalArgumentException("No existe un trabajo abierto para el vehículo indicado.");
@@ -82,7 +85,7 @@ public class Trabajos implements ITrabajos {
     }
 
     public Trabajo anadirPrecioMaterial(Trabajo trabajo, float precioMaterial) {
-        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+        Objects.requireNonNull(trabajo, TRABAJO_NULO);
         Trabajo trabajoAbierto = getTrabajoAbierto(trabajo.getVehiculo());
         if (trabajoAbierto == null) {
             throw new IllegalArgumentException("No existe un trabajo abierto para el vehículo indicado.");
@@ -92,7 +95,7 @@ public class Trabajos implements ITrabajos {
     }
 
     public Trabajo cerrar(Trabajo trabajo, LocalDate fechaFin) {
-        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+        Objects.requireNonNull(trabajo, TRABAJO_NULO);
         Trabajo trabajoAbierto = getTrabajoAbierto(trabajo.getVehiculo());
         if (trabajoAbierto == null) {
             throw new IllegalArgumentException("No existe un trabajo abierto para el vehículo indicado.");
@@ -102,19 +105,19 @@ public class Trabajos implements ITrabajos {
     }
 
     public Trabajo buscar(Trabajo trabajo) {
-        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+        Objects.requireNonNull(trabajo, TRABAJO_NULO);
         int indice = coleccionTrabajos.indexOf(trabajo);
         return (indice == -1) ? null : coleccionTrabajos.get(indice);
     }
 
-    public Trabajo borrar(Trabajo trabajo) {
-        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+    public Trabajo borrar(Trabajo trabajo) throws TallerMecanicoExcepcion {
+        Objects.requireNonNull(trabajo, TRABAJO_NULO);
         Trabajo trabajoEncontrado = buscar(trabajo);
         if (trabajoEncontrado != null) {
             coleccionTrabajos.remove(trabajoEncontrado);
             return trabajoEncontrado;
         }
-        throw new IllegalArgumentException("No existe el trabajo a borrar.");
+        throw new TallerMecanicoExcepcion("No existe el trabajo a borrar.");
     }
 
 }

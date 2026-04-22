@@ -27,7 +27,7 @@ Todo esto, aparte de algunos **patrones utilizados en el sprint anterior** como 
 - **Objeto de transferencia de datos (Data Transfer Object - DTO)**: Utilizado en las clases de dominio.
 - **Objeto de acceso a los datos (Data Access Object - DAO)**: Utilizado en las clases de negocio.
 
-En este repositorio hay un esqueleto de proyecto **gradle** con las dependencias necesarias del proyecto y que, en la rama `refactorizacion_herencia`, ya lleva incluidos todos los test necesarios que el modelo debe pasar, con todo lo que hemos comentado.
+En este repositorio hay un esqueleto de proyecto **gradle** con las dependencias necesarias del proyecto y que, en la rama `refactorizacion_herencia`, ya lleva incluidos todos los test necesarios que el modeloCascada debe pasar, con todo lo que hemos comentado.
 
 Para ello te muestro un diagrama de clases (en el que cuando se expresa cardinalidad `*` queremos expresar que se hará uso de **listas**) para el mismo y poco a poco te iré explicando los diferentes pasos a realizar:
 
@@ -55,8 +55,8 @@ Para ello te muestro un diagrama de clases (en el que cuando se expresa cardinal
 5. Crea el enumerado `FabricaFuenteDatos` que implementará la fábrica de modelos que por ahora solo tendrá la instancia `MEMORIA`.
 6. Comprueba que las clases de este paquete **pasan los tests** y cuando lo hagan haz un **commit**.
 
-#### Adecuación del paquete `modelo`
-1. Extrae la interfaz y renombra la clase para el modelo.
+#### Adecuación del paquete `modeloCascada`
+1. Extrae la interfaz y renombra la clase para el modeloCascada.
 2. Crea la fábrica de modelos, que por ahora solo tendrá la instancia `CASCADA`.
 3. Comprueba que las clases de este paquete **pasan los tests** y cuando lo hagan haz un **commit**.
 
@@ -71,7 +71,7 @@ Para ello te muestro un diagrama de clases (en el que cuando se expresa cardinal
 8. Realiza un **commit**.
 
 #### Adecuación del paquete `controlador`
-1. Adecúa la clase `Controlador` a lo expresado en el diagrama. Deberá suscribirse al gestor de eventos de la vista para todos los eventos y en el método `actualizar` los tratará interactuando con la vista y con el modelo para llevar a cabo las diferentes operaciones.
+1. Adecúa la clase `Controlador` a lo expresado en el diagrama. Deberá suscribirse al gestor de eventos de la vista para todos los eventos y en el método `actualizar` los tratará interactuando con la vista y con el modeloCascada para llevar a cabo las diferentes operaciones.
 2. Extrae la interfaz `IControlador` de la clase anterior que hereda de la interfaz `ReceptorEventos`.
 3. Realiza un **commit**.
 
