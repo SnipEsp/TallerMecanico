@@ -73,7 +73,7 @@ class RevisionesTest {
     void getDevuelveRevisionesCorrectamente() {
         assertDoesNotThrow(() -> revisiones.insertar(revision1));
         when(revision1.getFechaFin()).thenReturn(anteayer);
-        when(revision1.estaCerrada()).thenReturn(true);
+        when(revision1.estaCerrado()).thenReturn(true);
         assertDoesNotThrow(() -> revisiones.insertar(revision3));
         List<Revision> copiaRevisiones = revisiones.get();
         assertEquals(2, copiaRevisiones.size());
@@ -87,7 +87,7 @@ class RevisionesTest {
     void getClienteValidoDevuelveRevisionesClienteCorrectamente() {
         assertDoesNotThrow(() -> revisiones.insertar(revision1));
         when(revision1.getFechaFin()).thenReturn(anteayer);
-        when(revision1.estaCerrada()).thenReturn(true);
+        when(revision1.estaCerrado()).thenReturn(true);
         assertDoesNotThrow(() -> revisiones.insertar(revision2));
         assertDoesNotThrow(() -> revisiones.insertar(revision3));
         List<Revision> revisionesCliente = revisiones.get(cliente1);
@@ -102,7 +102,7 @@ class RevisionesTest {
     void getVehiculoValidoDevuelveRevisionesVehiculoCorrectamente() {
         assertDoesNotThrow(() -> revisiones.insertar(revision1));
         when(revision1.getFechaFin()).thenReturn(anteayer);
-        when(revision1.estaCerrada()).thenReturn(true);
+        when(revision1.estaCerrado()).thenReturn(true);
         assertDoesNotThrow(() -> revisiones.insertar(revision2));
         assertDoesNotThrow(() -> revisiones.insertar(revision3));
         List<Revision> revisionesVehiculo = revisiones.get(vehiculo1);
@@ -146,7 +146,7 @@ class RevisionesTest {
         assertDoesNotThrow(() -> revisiones.cerrar(revision1, anteayer));
         when(revision1.getFechaInicio()).thenReturn(ayer);
         when(revision1.getFechaFin()).thenReturn(anteayer);
-        when(revision1.estaCerrada()).thenReturn(true);
+        when(revision1.estaCerrado()).thenReturn(true);
         assertDoesNotThrow(() -> revisiones.insertar(revision1));
         assertDoesNotThrow(() -> revisiones.cerrar(revision1, ayer));
         when(revision1.getFechaFin()).thenReturn(ayer);
@@ -160,7 +160,7 @@ class RevisionesTest {
         assertDoesNotThrow(() -> revisiones.cerrar(revision1, anteayer));
         when(revision1.getFechaInicio()).thenReturn(ayer);
         when(revision1.getFechaFin()).thenReturn(anteayer);
-        when(revision1.estaCerrada()).thenReturn(true);
+        when(revision1.estaCerrado()).thenReturn(true);
         assertDoesNotThrow(() -> revisiones.insertar(revision1));
         assertDoesNotThrow(() -> revisiones.cerrar(revision1, ayer));
         when(revision1.getFechaFin()).thenReturn(ayer);

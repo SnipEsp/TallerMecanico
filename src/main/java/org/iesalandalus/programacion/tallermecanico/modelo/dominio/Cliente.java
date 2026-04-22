@@ -7,9 +7,9 @@ import java.util.Objects;
  * Contiene nombre, DNI y teléfono, con validaciones para cada campo.
  */
 public class Cliente {
-    private final String ER_NOMBRE = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+";
-    private final String ER_DNI = "\\d{8}[A-HJ-NP-TV-Z]";
-    private final String ER_TELEFONO = "\\d{9}";
+    private static final String ER_NOMBRE = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+";
+    private static final String ER_DNI = "\\d{8}[A-HJ-NP-TV-Z]";
+    private static final String ER_TELEFONO = "\\d{9}";
     private String nombre;
     private String dni;
     private String telefono;
@@ -90,7 +90,7 @@ public class Cliente {
      * @throws NullPointerException Si el DNI es nulo
      * @throws IllegalArgumentException Si el DNI no cumple el formato
      */
-    private void setDni(String dni) {
+    public void setDni(String dni) {
         if (dni == null) {
             throw new NullPointerException("El DNI no puede ser nulo.");
         } else if (!dni.matches(ER_DNI)) {
