@@ -30,6 +30,9 @@ public class Vehiculo {
         if (modelo == null) {
             throw new NullPointerException("El modelo no puede ser nulo.");
         }
+        if (modelo.isBlank()) {
+            throw new IllegalArgumentException("El modelo no puede estar en blanco.");
+        }
     }
 
     private void validarMatricula(String matricula) {

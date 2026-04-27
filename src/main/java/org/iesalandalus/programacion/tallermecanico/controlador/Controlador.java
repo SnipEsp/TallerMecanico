@@ -6,6 +6,7 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
 import org.iesalandalus.programacion.tallermecanico.vista.Vista;
+import org.iesalandalus.programacion.tallermecanico.vista.eventos.Evento;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.List;
@@ -318,5 +319,10 @@ public class Controlador implements IControlador {
     public Revision cerrar(Revision revision, java.time.LocalDate fechaCierre) throws OperationNotSupportedException {
         Trabajo cerrado = modeloCascada.cerrar((Trabajo) revision, fechaCierre);
         return (Revision) cerrado;
+    }
+
+    @Override
+    public void actualizar(Evento evento) {
+        // Event handling implementation
     }
 }

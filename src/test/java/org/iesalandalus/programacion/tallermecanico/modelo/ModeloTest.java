@@ -1,5 +1,6 @@
 package org.iesalandalus.programacion.tallermecanico.modelo;
 
+import org.iesalandalus.programacion.tallermecanico.modelo.cascada.ModeloCascada;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.*;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.*;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.memoria.Clientes;
@@ -21,18 +22,18 @@ import static org.mockito.Mockito.*;
 class ModeloTest {
 
     @Mock
-    private static IClientes clientes;
+    private IClientes clientes;
     @Mock
-    private static IVehiculos vehiculos;
+    private IVehiculos vehiculos;
     @Mock
-    private static ITrabajos trabajos;
-    @InjectMocks
-    private Modelo modelo = FabricaModelo.CASCADA.crear(FabricaFuenteDatos.MEMORIA);
+    private ITrabajos trabajos;
 
-    private static Cliente cliente;
-    private static Vehiculo vehiculo;
-    private static Revision revision;
-    private static Mecanico mecanico;
+    private Modelo modelo;
+
+    private Cliente cliente;
+    private Vehiculo vehiculo;
+    private Revision revision;
+    private Mecanico mecanico;
 
     private AutoCloseable procesadorAnotaciones;
     private MockedConstruction<Cliente> controladorCreacionMockCliente;
@@ -43,8 +44,8 @@ class ModeloTest {
     private MockedConstruction<Trabajos> controladorCreacionMockTrabajos;
 
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach
+    void init() {
         cliente = mock();
         when(cliente.getNombre()).thenReturn("Bob Esponja");
         when(cliente.getDni()).thenReturn("11223344B");
@@ -61,10 +62,7 @@ class ModeloTest {
         when(mecanico.getCliente()).thenReturn(cliente);
         when(mecanico.getVehiculo()).thenReturn(vehiculo);
         when(mecanico.getFechaInicio()).thenReturn(LocalDate.now().minusDays(1));
-    }
 
-    @BeforeEach
-    void init() {
         controladorCreacionMockCliente = mockConstruction(Cliente.class);
         controladorCreacionMockClientes = mockConstruction(Clientes.class);
         controladorCreacionMockVehiculos = mockConstruction(Vehiculos.class);
@@ -72,6 +70,8 @@ class ModeloTest {
         controladorCreacionMockMecanico = mockConstruction(Mecanico.class);
         controladorCreacionMockTrabajos = mockConstruction(Trabajos.class);
         procesadorAnotaciones = MockitoAnnotations.openMocks(this);
+        modelo = new ModeloCascada(clientes, vehiculos, trabajos);
+        modelo.comenzar();
     }
 
     @AfterEach
@@ -178,6 +178,7 @@ class ModeloTest {
 
     @Test
     void cerrarLlamaTrabajosCerrar() {
+        when(trabajos.cerrar(revision, LocalDate.now())).thenReturn(revision);
         assertDoesNotThrow(() -> modelo.cerrar(revision, LocalDate.now()));
         assertDoesNotThrow(() -> verify(trabajos).cerrar(revision, LocalDate.now()));
     }
@@ -216,6 +217,7 @@ class ModeloTest {
 
     @Test
     void borrarTrabajoLlamaTrabajosBorrar() {
+        when(trabajos.borrar(revision)).thenReturn(revision);
         assertDoesNotThrow(() -> modelo.borrar(revision));
         assertDoesNotThrow(() -> verify(trabajos).borrar(revision));
     }

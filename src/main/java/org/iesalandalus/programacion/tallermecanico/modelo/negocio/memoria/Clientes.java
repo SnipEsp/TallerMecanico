@@ -20,24 +20,27 @@ public class Clientes implements org.iesalandalus.programacion.tallermecanico.mo
             throw new NullPointerException("No se puede insertar un cliente nulo.");
         }
         if (this.listaClientes.contains(cliente)) {
-            throw new TallerMecanicoExcepcion("Error: Ya existe un cliente con ese DNI.");
+            throw new TallerMecanicoExcepcion("Ya existe un cliente con ese DNI.");
         }
         this.listaClientes.add(cliente);
     }
 
     @Override
     public Cliente modificar(Cliente cliente, String nuevoNombre, String nuevoTelefono) throws TallerMecanicoExcepcion {
+        if (cliente == null) {
+            throw new NullPointerException("No se puede modificar un cliente nulo.");
+        }
         int indice = this.listaClientes.indexOf(cliente);
         if (indice == -1) {
-            throw new TallerMecanicoExcepcion("Error: Cliente no encontrado.");
+            throw new TallerMecanicoExcepcion("No existe ningún cliente con ese DNI.");
         }
 
         Cliente encontrado = this.listaClientes.get(indice);
 
-        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
+        if (nuevoNombre != null) {
             encontrado.setNombre(nuevoNombre);
         }
-        if (nuevoTelefono != null && !nuevoTelefono.trim().isEmpty()) {
+        if (nuevoTelefono != null) {
             encontrado.setTelefono(nuevoTelefono);
         }
 
@@ -59,11 +62,11 @@ public class Clientes implements org.iesalandalus.programacion.tallermecanico.mo
     @Override
     public void borrar(Cliente cliente) throws TallerMecanicoExcepcion {
         if (cliente == null) {
-            throw new NullPointerException("No se puede eliminar un cliente nulo.");
+            throw new NullPointerException("No se puede borrar un cliente nulo.");
         }
         boolean eliminado = this.listaClientes.remove(cliente);
         if (!eliminado) {
-            throw new TallerMecanicoExcepcion("Error: No se puede borrar un cliente que no existe en la lista.");
+            throw new TallerMecanicoExcepcion("No existe ningún cliente con ese DNI.");
         }
     }
 

@@ -9,11 +9,11 @@ import java.util.Objects;
 public abstract class Trabajo {
     protected static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final float FACTOR_DIA = 10f;
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
-    private int horas;
-    private Cliente cliente;
-    private Vehiculo vehiculo;
+    protected LocalDate fechaInicio;
+    protected LocalDate fechaFin;
+    protected int horas;
+    protected Cliente cliente;
+    protected Vehiculo vehiculo;
 
     public Trabajo(Cliente cliente, Vehiculo vehiculo, LocalDate fechaInicio) {
         setCliente(cliente);
@@ -24,8 +24,8 @@ public abstract class Trabajo {
     }
 
     public Trabajo(Trabajo trabajo) {
-        Objects.requireNonNull(trabajo, "No se puede copiar un trabajo nulo.");
-        cliente = trabajo.getCliente();
+        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+        cliente = new Cliente(trabajo.getCliente());
         vehiculo = trabajo.getVehiculo();
         fechaInicio = trabajo.getFechaInicio();
         fechaFin = trabajo.getFechaFin();
@@ -45,7 +45,7 @@ public abstract class Trabajo {
 
     public static Trabajo get(Vehiculo vehiculo) {
         Objects.requireNonNull(vehiculo, "El vehículo no puede ser nulo.");
-        return null;
+        return new Revision(new Cliente("Bob", "11223344B", "950112233"), vehiculo, LocalDate.now().minusDays(1));
     }
 
     public Cliente getCliente() {
@@ -70,6 +70,9 @@ public abstract class Trabajo {
 
     private void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = Objects.requireNonNull(fechaInicio, "La fecha de inicio no puede ser nula.");
+        if (fechaInicio.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser futura.");
+        }
     }
 
     public LocalDate getFechaFin() {
@@ -105,6 +108,9 @@ public abstract class Trabajo {
         if (fechaFin == null) {
             throw new NullPointerException("La fecha de fin no puede ser nula.");
         }
+        if (fechaFin.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La fecha de fin no puede ser futura.");
+        }
         if (fechaFin.isBefore(fechaInicio)) {
             throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio.");
         }
@@ -117,7 +123,7 @@ public abstract class Trabajo {
 
     public abstract void anadirPrecioMaterial(float precioMaterial) throws TallerMecanicoExcepcion;
 
-    private float getPrecioFijo() {
+    protected float getPrecioFijo() {
         return FACTOR_DIA * getDias();
     }
 

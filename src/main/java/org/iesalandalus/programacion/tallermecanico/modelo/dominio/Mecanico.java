@@ -3,6 +3,7 @@ package org.iesalandalus.programacion.tallermecanico.modelo.dominio;
 import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepcion;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Mecanico extends Trabajo {
     private static final float FACTOR_HORA = 30f;
@@ -18,12 +19,22 @@ public class Mecanico extends Trabajo {
         this.precioMaterial = mecanico.precioMaterial;
     }
 
+    public Mecanico(Trabajo trabajo) {
+        super(trabajo);
+        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+        if (trabajo instanceof Mecanico mecanico) {
+            this.precioMaterial = mecanico.precioMaterial;
+        } else {
+            throw new IllegalArgumentException("El trabajo debe ser de tipo Mecanico.");
+        }
+    }
+
     @Override
     public float getPrecio() {
         if (!estaCerrado()) {
             return 0;
         }
-        return getHoras() * FACTOR_HORA + precioMaterial * FACTOR_PRECIO_MATERIAL;
+        return getPrecioFijo() + getHoras() * FACTOR_HORA + precioMaterial * FACTOR_PRECIO_MATERIAL;
     }
 
     @Override
@@ -43,5 +54,16 @@ public class Mecanico extends Trabajo {
             throw new TallerMecanicoExcepcion("No se puede añadir precio del material, ya que el trabajo mecánico está cerrado.");
         }
         this.precioMaterial += precioMaterial;
+    }
+
+    @Override
+    public String toString() {
+        String cadena;
+        if (!estaCerrado()) {
+            cadena = String.format("Mecánico -> %s - %s (%s - ): %d horas, %.2f € en material", getCliente(), getVehiculo(), getFechaInicio().format(FORMATO_FECHA), getHoras(), getPrecioMaterial());
+        } else {
+            cadena = String.format("Mecánico -> %s - %s (%s - %s): %d horas, %.2f € en material, %.2f € total", getCliente(), getVehiculo(), getFechaInicio().format(FORMATO_FECHA), getFechaFin().format(FORMATO_FECHA), getHoras(), getPrecioMaterial(), getPrecio());
+        }
+        return cadena;
     }
 }

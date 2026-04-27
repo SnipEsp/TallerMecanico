@@ -4,6 +4,7 @@ import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepci
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Revision extends Trabajo {
     private static final float FACTOR_HORA = 35f;
@@ -14,6 +15,14 @@ public class Revision extends Trabajo {
 
     public Revision(Revision revision) {
         super(revision);
+    }
+
+    public Revision(Trabajo trabajo) {
+        super(trabajo);
+        Objects.requireNonNull(trabajo, "El trabajo no puede ser nulo.");
+        if (!(trabajo instanceof Revision)) {
+            throw new IllegalArgumentException("El trabajo debe ser de tipo Revision.");
+        }
     }
 
     @Override
@@ -31,7 +40,7 @@ public class Revision extends Trabajo {
 
     @Override
     public void anadirPrecioMaterial(float precioMaterial) throws TallerMecanicoExcepcion {
-        throw new TallerMecanicoExcepcion("La revisión no puede añadir precio de material.");
+        throw new TallerMecanicoExcepcion("No se puede añadir precio al material para este tipo de trabajos.");
     }
 
     @Override

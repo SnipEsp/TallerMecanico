@@ -28,11 +28,11 @@ public class Vehiculos implements org.iesalandalus.programacion.tallermecanico.m
     @Override
     public void insertar(Vehiculo vehiculo) throws TallerMecanicoExcepcion {
         if (vehiculo == null) {
-            throw new TallerMecanicoExcepcion("No se puede insertar un vehículo nulo.");
+            throw new NullPointerException("No se puede insertar un vehículo nulo.");
         }
 
         if (coleccionVehiculos.contains(vehiculo)) {
-            throw new TallerMecanicoExcepcion("El vehículo ya existe en el sistema.");
+            throw new TallerMecanicoExcepcion("Ya existe un vehículo con esa matrícula.");
         }
 
         this.coleccionVehiculos.add(vehiculo);
@@ -44,6 +44,9 @@ public class Vehiculos implements org.iesalandalus.programacion.tallermecanico.m
      */
     @Override
     public Vehiculo buscar(Vehiculo vehiculo) {
+        if (vehiculo == null) {
+            throw new NullPointerException("No se puede buscar un vehículo nulo.");
+        }
         int indice = coleccionVehiculos.indexOf(vehiculo);
         if (indice != -1) {
             return coleccionVehiculos.get(indice);
@@ -56,8 +59,11 @@ public class Vehiculos implements org.iesalandalus.programacion.tallermecanico.m
      */
     @Override
     public void borrar(Vehiculo vehiculo) throws TallerMecanicoExcepcion {
+        if (vehiculo == null) {
+            throw new NullPointerException("No se puede borrar un vehículo nulo.");
+        }
         if (!coleccionVehiculos.remove(vehiculo)) {
-            throw new TallerMecanicoExcepcion("El vehículo a borrar no existe.");
+            throw new TallerMecanicoExcepcion("No existe ningún vehículo con esa matrícula.");
         }
     }
 }

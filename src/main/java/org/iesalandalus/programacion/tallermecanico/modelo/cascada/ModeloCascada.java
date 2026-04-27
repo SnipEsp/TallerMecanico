@@ -10,7 +10,6 @@ import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ITrabajos;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IVehiculos;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IFuenteDatos;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.memoria.FuenteDatosMemoria;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -18,31 +17,39 @@ import java.util.*;
 /**
  * Implementación del modelo del taller mecánico que gestiona las operaciones
  * de clientes, vehículos y trabajos con borrado en cascada.
- * 
+ * <p>
  * El borrado en cascada significa que al borrar un cliente o vehículo,
  * automáticamente se borran todos los trabajos asociados a ellos.
- * 
+ * <p>
  * Esta clase utiliza el patrón Factory para crear las colecciones de datos
  * a través de la interfaz IFuenteDatos, permitiendo cambiar la implementación
  * (memoria, ficheros, base de datos) sin modificar esta clase.
  */
 public class ModeloCascada implements Modelo {
 
-    /** Factoría que crea las colecciones de datos (clientes, vehículos, trabajos) */
+    /**
+     * Factoría que crea las colecciones de datos (clientes, vehículos, trabajos)
+     */
     private final IFuenteDatos fuenteDatos;
-    
-    /** Colección de clientes del taller */
+
+    /**
+     * Colección de clientes del taller
+     */
     IClientes clientes;
-    
-    /** Colección de vehículos del taller */
+
+    /**
+     * Colección de vehículos del taller
+     */
     IVehiculos vehiculos;
-    
-    /** Colección de trabajos (revisiones y mecánicos) del taller */
+
+    /**
+     * Colección de trabajos (revisiones y mecánicos) del taller
+     */
     ITrabajos trabajos;
 
     /**
      * Constructor que recibe la factoría de datos.
-     * 
+     *
      * @param fuenteDatos Factoría que creará las colecciones cuando se llame a comenzar()
      */
     public ModeloCascada(IFuenteDatos fuenteDatos) {
@@ -50,8 +57,22 @@ public class ModeloCascada implements Modelo {
     }
 
     /**
+     * Constructor que recibe las colecciones directamente (para testing).
+     *
+     * @param clientes  Colección de clientes
+     * @param vehiculos Colección de vehículos
+     * @param trabajos  Colección de trabajos
+     */
+    public ModeloCascada(IClientes clientes, IVehiculos vehiculos, ITrabajos trabajos) {
+        this.clientes = clientes;
+        this.vehiculos = vehiculos;
+        this.trabajos = trabajos;
+        this.fuenteDatos = null;
+    }
+
+    /**
      * Inicializa las colecciones de datos del taller usando la factoría.
-     * 
+     * <p>
      * Este método debe llamarse antes de cualquier otra operación.
      * Crea las instancias de las colecciones (clientes, vehículos, trabajos)
      * a través de la factoría IFuenteDatos, lo que permite cambiar la
@@ -59,14 +80,16 @@ public class ModeloCascada implements Modelo {
      */
     @Override
     public void comenzar() {
-        clientes = fuenteDatos.crearClientes();
-        vehiculos = fuenteDatos.crearVehiculos();
-        trabajos = fuenteDatos.crearTrabajos();
+        if (fuenteDatos != null) {
+            clientes = fuenteDatos.crearClientes();
+            vehiculos = fuenteDatos.crearVehiculos();
+            trabajos = fuenteDatos.crearTrabajos();
+        }
     }
 
     /**
      * Finaliza la ejecución del modelo.
-     * 
+     * <p>
      * En una implementación con persistencia (ficheros, base de datos),
      * aquí se guardarían los datos antes de cerrar.
      */
@@ -77,7 +100,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Inserta un nuevo cliente en el sistema.
-     * 
+     * <p>
      * Crea una copia del cliente antes de insertarlo para proteger la instancia
      * original que pasó el cliente (evita que modificaciones externas afecten
      * al dato almacenado).
@@ -92,7 +115,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Inserta un nuevo vehículo en el sistema.
-     * 
+     * <p>
      * No crea copia porque Vehiculo es un record (inmutable por diseño en Java),
      * por lo que no puede ser modificado después de su creación.
      *
@@ -107,7 +130,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Inserta un nuevo trabajo (revisión o mecánico) en el sistema.
-     * 
+     * <p>
      * Usa el método estático Trabajo.copiar() que crea la copia adecuada
      * según el tipo concreto (Revision o Mecanico). Esto protege la instancia
      * original y evita problemas de polimorfismo.
@@ -117,12 +140,14 @@ public class ModeloCascada implements Modelo {
      */
     @Override
     public void insertar(Trabajo trabajo) throws TallerMecanicoExcepcion {
+        clientes.buscar(trabajo.getCliente());
+        vehiculos.buscar(trabajo.getVehiculo());
         trabajos.insertar(Trabajo.copiar(trabajo));
     }
 
     /**
      * Busca un cliente en el sistema usando su DNI.
-     * 
+     * <p>
      * Si el cliente existe, devuelve una copia para proteger la instancia
      * original almacenada en la colección (evita que el cliente modifique
      * directamente el dato almacenado).
@@ -140,7 +165,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Busca un vehículo en el sistema usando su matrícula.
-     * 
+     * <p>
      * Devuelve la referencia directamente porque Vehiculo es un record
      * (inmutable), por lo que no hay riesgo de que el cliente modifique
      * el dato almacenado.
@@ -157,7 +182,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Busca una revisión en el sistema.
-     * 
+     * <p>
      * La búsqueda se realiza en la colección de trabajos usando el cliente,
      * vehículo y fecha de inicio. Si se encuentra, devuelve una copia
      * para proteger la instancia original.
@@ -175,7 +200,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Modifica el nombre y teléfono de un cliente existente.
-     * 
+     * <p>
      * Delega la operación a la colección de clientes, que valida que
      * el cliente exista y actualiza sus datos.
      *
@@ -192,7 +217,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Añade horas a una revisión existente.
-     * 
+     * <p>
      * Delega la operación a la colección de trabajos, que valida que
      * la revisión exista, no esté cerrada y que las horas sean positivas.
      *
@@ -208,7 +233,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Añade el precio del material utilizado en una revisión.
-     * 
+     * <p>
      * Solo aplicable a revisiones (no a trabajos mecánicos).
      * Delega la operación a la colección de trabajos.
      *
@@ -224,7 +249,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Cierra un trabajo estableciendo su fecha de fin.
-     * 
+     * <p>
      * Una vez cerrado, no se pueden añadir más horas ni material.
      * Delega la validación de la fecha a la colección de trabajos.
      * Devuelve una copia para evitar aliasing (que el cliente modifique
@@ -243,10 +268,10 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Borra un cliente y todos sus trabajos asociados (operación en cascada).
-     * 
+     * <p>
      * El borrado en cascada es necesario para mantener la integridad de los datos:
      * no pueden existir trabajos sin un cliente asociado.
-     * 
+     * <p>
      * Orden de operaciones:
      * 1. Obtiene todos los trabajos del cliente
      * 2. Borra cada trabajo de la colección global
@@ -257,7 +282,7 @@ public class ModeloCascada implements Modelo {
      */
     @Override
     public void borrar(Cliente cliente) throws TallerMecanicoExcepcion {
-        Trabajo[] trabajosCliente = trabajos.get(cliente);
+        List<Trabajo> trabajosCliente = trabajos.get(cliente);
         for (Trabajo t : trabajosCliente) {
             trabajos.borrar(t);
         }
@@ -266,10 +291,10 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Borra un vehículo y todos sus trabajos asociados (operación en cascada).
-     * 
+     * <p>
      * El borrado en cascada es necesario para mantener la integridad de los datos:
      * no pueden existir trabajos sin un vehículo asociado.
-     * 
+     * <p>
      * Orden de operaciones:
      * 1. Obtiene todos los trabajos del vehículo
      * 2. Borra cada trabajo de la colección global
@@ -280,7 +305,7 @@ public class ModeloCascada implements Modelo {
      */
     @Override
     public void borrar(Vehiculo vehiculo) throws TallerMecanicoExcepcion {
-        Trabajo[] trabajosVehiculo = trabajos.get(vehiculo);
+        List<Trabajo> trabajosVehiculo = trabajos.get(vehiculo);
         for (Trabajo t : trabajosVehiculo) {
             trabajos.borrar(t);
         }
@@ -289,7 +314,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Borra un trabajo específico del sistema.
-     * 
+     * <p>
      * A diferencia de borrar(Cliente) y borrar(Vehiculo), este método
      * NO realiza borrado en cascada. Solo borra el trabajo indicado,
      * dejando el cliente y vehículo asociados intactos.
@@ -308,7 +333,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Devuelve una lista con todos los clientes del sistema.
-     * 
+     * <p>
      * Crea copias de cada cliente para proteger las instancias originales
      * almacenadas en la colección. Esto evita que el cliente modifique
      * accidentalmente los datos almacenados.
@@ -326,7 +351,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Devuelve una lista con todos los vehículos del sistema.
-     * 
+     * <p>
      * No crea copias porque Vehiculo es un record (inmutable), por lo que
      * no hay riesgo de que el cliente modifique los datos almacenados.
      *
@@ -344,7 +369,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Devuelve una lista con todos los trabajos del sistema.
-     * 
+     * <p>
      * Incluye tanto revisiones como trabajos mecánicos.
      * Crea copias de cada trabajo usando el método estático Trabajo.copiar()
      * que maneja correctamente el polimorfismo (crea Revision o Mecanico según corresponda).
@@ -361,7 +386,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Devuelve una lista con todos los trabajos de un cliente específico.
-     * 
+     * <p>
      * Filtra los trabajos por el cliente especificado y crea copias
      * para proteger las instancias originales.
      *
@@ -378,7 +403,7 @@ public class ModeloCascada implements Modelo {
 
     /**
      * Devuelve una lista con todos los trabajos de un vehículo específico.
-     * 
+     * <p>
      * Filtra los trabajos por el vehículo especificado y crea copias
      * para proteger las instancias originales.
      *
