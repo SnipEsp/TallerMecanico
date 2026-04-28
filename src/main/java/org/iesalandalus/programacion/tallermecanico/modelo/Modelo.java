@@ -25,13 +25,25 @@ public interface Modelo {
 
     Revision buscar(Revision revision);
 
+    Trabajo buscar(Trabajo trabajo);
+
     Cliente modificar(Cliente cliente, String nombre, String telefono) throws TallerMecanicoExcepcion;
 
     Revision anadirHoras(Revision revision, int horas) throws TallerMecanicoExcepcion;
 
+    Trabajo anadirHoras(Trabajo trabajo, int horas) throws TallerMecanicoExcepcion;
+
+    Trabajo anadirHoras(Vehiculo vehiculo, int horas) throws TallerMecanicoExcepcion;
+
     Revision anadirPrecioMaterial(Revision revision, float precioMaterial);
 
+    Trabajo anadirPrecioMaterial(Trabajo trabajo, float precioMaterial) throws TallerMecanicoExcepcion;
+
+    Trabajo anadirPrecioMaterial(Vehiculo vehiculo, float precioMaterial) throws TallerMecanicoExcepcion;
+
     Trabajo cerrar(Trabajo trabajo, LocalDate fechaFin) throws TallerMecanicoExcepcion;
+
+    Trabajo cerrar(Vehiculo vehiculo, LocalDate fechaFin) throws TallerMecanicoExcepcion;
 
     void borrar(Cliente cliente) throws TallerMecanicoExcepcion;
 

@@ -197,6 +197,22 @@ public class ModeloCascada implements Modelo {
         return (encontrado == null) ? null : (Revision) Trabajo.copiar(encontrado);
     }
 
+    /**
+     * Busca un trabajo en el sistema.
+     * <p>
+     * La búsqueda se realiza en la colección de trabajos. Si se encuentra, devuelve una copia
+     * para proteger la instancia original.
+     *
+     * @param trabajo Trabajo a buscar
+     * @return Copia del trabajo encontrado o null si no existe
+     */
+    @Override
+    public Trabajo buscar(Trabajo trabajo) {
+        Objects.requireNonNull(trabajo, "No se puede buscar un trabajo nulo.");
+        Trabajo encontrado = trabajos.buscar(trabajo);
+        return (encontrado == null) ? null : (Trabajo) Trabajo.copiar(encontrado);
+    }
+
 
     /**
      * Modifica el nombre y teléfono de un cliente existente.
@@ -232,6 +248,43 @@ public class ModeloCascada implements Modelo {
     }
 
     /**
+     * Añade horas a un trabajo existente.
+     * <p>
+     * Delega la operación a la colección de trabajos, que valida que
+     * el trabajo exista, no esté cerrado y que las horas sean positivas.
+     *
+     * @param trabajo Trabajo al que añadir horas
+     * @param horas   Número de horas a añadir (debe ser mayor que 0)
+     * @return Trabajo actualizado con las nuevas horas
+     * @throws TallerMecanicoExcepcion Si el trabajo no existe, está cerrado o las horas son inválidas
+     */
+    @Override
+    public Trabajo anadirHoras(Trabajo trabajo, int horas) throws TallerMecanicoExcepcion {
+        Trabajo trabajoActualizado = trabajos.anadirHoras(trabajo, horas);
+        return (Trabajo) Trabajo.copiar(trabajoActualizado);
+    }
+
+    /**
+     * Añade horas al trabajo abierto de un vehículo.
+     * <p>
+     * Busca el trabajo abierto del vehículo y le añade las horas especificadas.
+     *
+     * @param vehiculo Vehículo cuyo trabajo abierto se actualizará
+     * @param horas    Número de horas a añadir (debe ser mayor que 0)
+     * @return Trabajo actualizado con las nuevas horas
+     * @throws TallerMecanicoExcepcion Si no hay trabajo abierto o las horas son inválidas
+     */
+    @Override
+    public Trabajo anadirHoras(Vehiculo vehiculo, int horas) throws TallerMecanicoExcepcion {
+        Trabajo trabajoAbierto = trabajos.getTrabajoAbierto(vehiculo);
+        if (trabajoAbierto == null) {
+            throw new TallerMecanicoExcepcion("No existe ningún trabajo abierto para dicho vehículo.");
+        }
+        Trabajo trabajoActualizado = trabajos.anadirHoras(trabajoAbierto, horas);
+        return (Trabajo) Trabajo.copiar(trabajoActualizado);
+    }
+
+    /**
      * Añade el precio del material utilizado en una revisión.
      * <p>
      * Solo aplicable a revisiones (no a trabajos mecánicos).
@@ -245,6 +298,43 @@ public class ModeloCascada implements Modelo {
     @Override
     public Revision anadirPrecioMaterial(Revision revision, float precioMaterial) {
         return (Revision) trabajos.anadirPrecioMaterial(revision, precioMaterial);
+    }
+
+    /**
+     * Añade el precio del material utilizado en un trabajo.
+     * <p>
+     * Solo aplicable a trabajos mecánicos.
+     * Delega la operación a la colección de trabajos.
+     *
+     * @param trabajo        Trabajo al que añadir precio
+     * @param precioMaterial Precio del material a añadir
+     * @return Trabajo actualizado con el precio del material
+     * @throws TallerMecanicoExcepcion Si el trabajo no existe o está cerrado
+     */
+    @Override
+    public Trabajo anadirPrecioMaterial(Trabajo trabajo, float precioMaterial) throws TallerMecanicoExcepcion {
+        Trabajo trabajoActualizado = trabajos.anadirPrecioMaterial(trabajo, precioMaterial);
+        return (Trabajo) Trabajo.copiar(trabajoActualizado);
+    }
+
+    /**
+     * Añade el precio del material al trabajo abierto de un vehículo.
+     * <p>
+     * Busca el trabajo abierto del vehículo y le añade el precio del material especificado.
+     *
+     * @param vehiculo       Vehículo cuyo trabajo abierto se actualizará
+     * @param precioMaterial Precio del material a añadir
+     * @return Trabajo actualizado con el precio del material
+     * @throws TallerMecanicoExcepcion Si no hay trabajo abierto o el precio es inválido
+     */
+    @Override
+    public Trabajo anadirPrecioMaterial(Vehiculo vehiculo, float precioMaterial) throws TallerMecanicoExcepcion {
+        Trabajo trabajoAbierto = trabajos.getTrabajoAbierto(vehiculo);
+        if (trabajoAbierto == null) {
+            throw new TallerMecanicoExcepcion("No existe ningún trabajo abierto para dicho vehículo.");
+        }
+        Trabajo trabajoActualizado = trabajos.anadirPrecioMaterial(trabajoAbierto, precioMaterial);
+        return (Trabajo) Trabajo.copiar(trabajoActualizado);
     }
 
     /**
@@ -263,6 +353,26 @@ public class ModeloCascada implements Modelo {
     @Override
     public Trabajo cerrar(Trabajo trabajo, LocalDate fechaFin) throws TallerMecanicoExcepcion {
         Trabajo cerrado = trabajos.cerrar(trabajo, fechaFin);
+        return (Trabajo) Trabajo.copiar(cerrado);
+    }
+
+    /**
+     * Cierra el trabajo abierto de un vehículo estableciendo su fecha de fin.
+     * <p>
+     * Busca el trabajo abierto del vehículo y lo cierra con la fecha especificada.
+     *
+     * @param vehiculo Vehículo cuyo trabajo abierto se cerrará
+     * @param fechaFin Fecha de cierre del trabajo (no puede ser anterior a la fecha de inicio)
+     * @return Trabajo cerrado
+     * @throws TallerMecanicoExcepcion Si no hay trabajo abierto o la fecha es inválida
+     */
+    @Override
+    public Trabajo cerrar(Vehiculo vehiculo, LocalDate fechaFin) throws TallerMecanicoExcepcion {
+        Trabajo trabajoAbierto = trabajos.getTrabajoAbierto(vehiculo);
+        if (trabajoAbierto == null) {
+            throw new TallerMecanicoExcepcion("No existe ningún trabajo abierto para dicho vehículo.");
+        }
+        Trabajo cerrado = trabajos.cerrar(trabajoAbierto, fechaFin);
         return (Trabajo) Trabajo.copiar(cerrado);
     }
 
