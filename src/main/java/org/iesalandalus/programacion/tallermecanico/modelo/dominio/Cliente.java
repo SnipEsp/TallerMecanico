@@ -7,9 +7,9 @@ import java.util.Objects;
  * Contiene nombre, DNI y teléfono, con validaciones para cada campo.
  */
 public class Cliente {
-    private final String ER_NOMBRE = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+";
-    private final String ER_DNI = "\\d{8}[A-HJ-NP-TV-Z]";
-    private final String ER_TELEFONO = "\\d{9}";
+    private static final String ER_NOMBRE = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+(\\s[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+)*";
+    private static final String ER_DNI = "\\d{8}[A-HJ-NP-TV-Z]";
+    private static final String ER_TELEFONO = "\\d{9}";
     private String nombre;
     private String dni;
     private String telefono;
@@ -39,7 +39,7 @@ public class Cliente {
      */
     public Cliente(Cliente cliente) {
         if (cliente == null) {
-            throw new NullPointerException("No se puede copiar un cliente nulo.");
+            throw new NullPointerException("No es posible copiar un cliente nulo.");
         }
         nombre = cliente.nombre;
         dni = cliente.dni;
@@ -90,7 +90,7 @@ public class Cliente {
      * @throws NullPointerException Si el DNI es nulo
      * @throws IllegalArgumentException Si el DNI no cumple el formato
      */
-    private void setDni(String dni) {
+    public void setDni(String dni) {
         if (dni == null) {
             throw new NullPointerException("El DNI no puede ser nulo.");
         } else if (!dni.matches(ER_DNI)) {
@@ -151,7 +151,7 @@ public class Cliente {
      * @return Cliente con datos por defecto y el DNI especificado
      */
     public static Cliente get(String dni) {
-        return new Cliente("Nombrevalido", dni, "623567876");
+        return new Cliente("Nombre", dni, "623567876");
     }
 
     /**

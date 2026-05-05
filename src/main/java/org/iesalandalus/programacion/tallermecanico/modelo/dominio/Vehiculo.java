@@ -2,9 +2,21 @@ package org.iesalandalus.programacion.tallermecanico.modelo.dominio;
 
 import java.util.Objects;
 
-public record Vehiculo(String marca, String modelo, String matricula) {
-    private static String ER_MARCA = "[A-Z][a-z]+(?:[- ]?[A-Z][a-z]+)?|[A-Z]+";
-    private static String ER_MATRICULA = "\\d{4}[^\\W_AEIOUa-z]{3}";
+public class Vehiculo {
+    private static final String ER_MARCA = "[A-Z][a-z]+(?:[- ]?[A-Z][a-z]+)?|[A-Z]+";
+    private static final String ER_MATRICULA = "\\d{4}[^\\W_AEIOUa-z]{3}";
+    private String marca;
+    private String modelo;
+    private String matricula;
+
+    public Vehiculo(String marca, String modelo, String matricula) {
+        validarMarca(marca);
+        validarModelo(modelo);
+        validarMatricula(matricula);
+        this.marca = marca;
+        this.modelo = modelo;
+        this.matricula = matricula;
+    }
 
     private void validarMarca(String marca) {
         if (marca == null) {
@@ -12,12 +24,14 @@ public record Vehiculo(String marca, String modelo, String matricula) {
         } else if (!marca.matches(ER_MARCA)) {
             throw new IllegalArgumentException("La marca no tiene un formato válido.");
         }
-
     }
 
     private void validarModelo(String modelo) {
         if (modelo == null) {
             throw new NullPointerException("El modelo no puede ser nulo.");
+        }
+        if (modelo.isBlank()) {
+            throw new IllegalArgumentException("El modelo no puede estar en blanco.");
         }
     }
 
@@ -29,8 +43,19 @@ public record Vehiculo(String marca, String modelo, String matricula) {
         }
     }
 
-    public static Vehiculo get(String matricula) {
+    public String getMarca() {
+        return marca;
+    }
 
+    public String getModelo() {
+        return modelo;
+    }
+
+    public String getMatricula() {
+        return matricula;
+    }
+
+    public static Vehiculo get(String matricula) {
         return new Vehiculo("Seat", "Toledo", matricula);
     }
 
