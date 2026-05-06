@@ -8,6 +8,7 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
 import org.iesalandalus.programacion.tallermecanico.vista.eventos.Evento;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import org.iesalandalus.programacion.utilidades.Entrada;
@@ -257,5 +258,22 @@ public class Consola {
      */
     public static LocalDate leerFechaCierre() {
         return leerFecha("Introduce la fecha de cierre: ");
+    }
+
+    /**
+     * Lee un mes del año desde la entrada estándar.
+     * Valida que el mes esté entre 1 y 12, sino solicita nuevamente.
+     * 
+     * @return Mes del año introducido por el usuario
+     */
+    public static Month leerMes() {
+        int numeroMes;
+        do {
+            numeroMes = leerEntero("Introduce el mes (1-12): ");
+            if (numeroMes < 1 || numeroMes > 12) {
+                System.out.println("Error: El mes debe estar entre 1 y 12.");
+            }
+        } while (numeroMes < 1 || numeroMes > 12);
+        return Month.of(numeroMes);
     }
 }

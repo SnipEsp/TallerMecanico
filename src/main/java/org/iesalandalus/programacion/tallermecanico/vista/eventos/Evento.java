@@ -24,7 +24,8 @@ public enum Evento {
     AÑADIR_HORAS_TRABAJO(17, "Añadir horas trabajo"),
     AÑADIR_PRECIO_MATERIAL_TRABAJO(18, "Añadir precio material trabajo"),
     CERRAR_TRABAJO(19, "Cerrar trabajo"),
-    SALIR(20, "Salir");
+    ESTADISTICAS_MENSUALES(20, "Estadísticas mensuales"),
+    SALIR(21, "Salir");
 
     private static final Map<Integer, Evento> eventos = new HashMap<>();
     private final int codigo;

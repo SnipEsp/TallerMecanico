@@ -6,12 +6,15 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Mecanico;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.TipoTrabajo;
 import org.iesalandalus.programacion.tallermecanico.vista.IVista;
 import org.iesalandalus.programacion.tallermecanico.vista.eventos.Evento;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Clase que gestiona la interfaz de usuario del taller mecánico por consola.
@@ -99,6 +102,7 @@ public class VistaTexto implements IVista {
                 case AÑADIR_HORAS_TRABAJO -> anadirHoras();
                 case AÑADIR_PRECIO_MATERIAL_TRABAJO -> anadirPrecioMaterial();
                 case CERRAR_TRABAJO -> cerrarTrabajo();
+                case ESTADISTICAS_MENSUALES -> mostrarEstadisticasMensuales();
                 case SALIR -> salir();
             }
         } catch (Exception e) {
@@ -395,5 +399,29 @@ public class VistaTexto implements IVista {
      */
     private void salir() {
         System.out.println("Saliendo del programa...");
+    }
+
+    /**
+     * Gestiona el mostrar estadísticas mensuales.
+     * Lee el mes y muestra las estadísticas de trabajos completados.
+     */
+    private void mostrarEstadisticasMensuales() {
+        Consola.mostrarCabecera("Estadísticas mensuales");
+        Month mes = Consola.leerMes();
+        mostrarEstadisticasMensuales(mes);
+    }
+
+    @Override
+    public void mostrarEstadisticasMensuales(Month mes) {
+        Map<TipoTrabajo, Integer> estadisticas = controlador.getEstadisticasMensuales();
+        
+        System.out.println("Estadísticas para el mes de " + mes + ":");
+        System.out.println("Revisiones: " + estadisticas.get(TipoTrabajo.REVISION));
+        System.out.println("Trabajos mecánicos: " + estadisticas.get(TipoTrabajo.MECANICO));
+    }
+
+    @Override
+    public Month leerMes() {
+        return Consola.leerMes();
     }
 }

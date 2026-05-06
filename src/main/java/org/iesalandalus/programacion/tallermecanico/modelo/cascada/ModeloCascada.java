@@ -6,6 +6,7 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.TipoTrabajo;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ITrabajos;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IVehiculos;
@@ -526,6 +527,11 @@ public class ModeloCascada implements Modelo {
             copias.add((Trabajo) Trabajo.copiar(trabajo));
         }
         return copias;
+    }
+
+    @Override
+    public Map<TipoTrabajo, Integer> getEstadisticasMensuales() {
+        return trabajos.getEstadisticasMensuales();
     }
 }
 

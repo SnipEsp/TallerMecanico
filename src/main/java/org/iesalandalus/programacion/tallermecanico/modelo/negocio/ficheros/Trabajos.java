@@ -2,15 +2,14 @@ package org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros;
 
 
 import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepcion;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.*;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ITrabajos;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Trabajos implements ITrabajos {
@@ -36,6 +35,30 @@ public class Trabajos implements ITrabajos {
         }
         return trabajosCliente;
     }
+
+    public Map<TipoTrabajo, Integer> getEstadisticasMensuales() {
+        Map<TipoTrabajo, Integer> estadisticas = inicializarEstadisticas();
+        LocalDate mesActual = LocalDate.now();
+        
+        for (Trabajo trabajo : coleccionTrabajos) {
+            if (trabajo.estaCerrado() && trabajo.getFechaFin().getMonth() == mesActual.getMonth() 
+                    && trabajo.getFechaFin().getYear() == mesActual.getYear()) {
+                TipoTrabajo tipo = TipoTrabajo.get(trabajo);
+                estadisticas.put(tipo, estadisticas.get(tipo) + 1);
+            }
+        }
+        
+        return estadisticas;
+    }
+
+    private Map<TipoTrabajo, Integer> inicializarEstadisticas() {
+        Map<TipoTrabajo, Integer> estadisticas = new HashMap<>();
+        estadisticas.put(TipoTrabajo.REVISION, 0);
+        estadisticas.put(TipoTrabajo.MECANICO, 0);
+        return estadisticas;
+    }
+
+    
 
     public List<Trabajo> get(Vehiculo vehiculo) {
         Objects.requireNonNull(vehiculo, VEHICULO_NULO);

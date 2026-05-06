@@ -8,6 +8,7 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Mecanico;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.TipoTrabajo;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.FabricaFuenteDatos;
 import org.iesalandalus.programacion.tallermecanico.vista.FabricaVista;
 import org.iesalandalus.programacion.tallermecanico.vista.IVista;
@@ -16,6 +17,7 @@ import org.iesalandalus.programacion.tallermecanico.vista.eventos.Evento;
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Clase que actúa como intermediario entre el Modelo y la Vista.
@@ -523,6 +525,19 @@ public class Controlador implements IControlador {
 
     @Override
     public void actualizar(Evento evento) {
-        // Event handling implementation - not needed for text-based view
+        switch (evento) {
+            case ESTADISTICAS_MENSUALES -> {
+                java.time.Month mes = vista.leerMes();
+                vista.mostrarEstadisticasMensuales(mes);
+            }
+            default -> {
+                // Other events handled by text-based view menu system
+            }
+        }
+    }
+
+    @Override
+    public Map<TipoTrabajo, Integer> getEstadisticasMensuales() {
+        return modelo.getEstadisticasMensuales();
     }
 }

@@ -5,11 +5,13 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Mecanico;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.TipoTrabajo;
 import org.iesalandalus.programacion.tallermecanico.vista.eventos.ReceptorEventos;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface IControlador extends ReceptorEventos {
     void comenzar();
@@ -77,4 +79,6 @@ public interface IControlador extends ReceptorEventos {
     Mecanico cerrar(Mecanico mecanico, LocalDate fechaCierre) throws OperationNotSupportedException;
 
     Trabajo cerrar(Vehiculo vehiculo, LocalDate fechaCierre) throws OperationNotSupportedException;
+
+    Map<TipoTrabajo, Integer> getEstadisticasMensuales();
 }
