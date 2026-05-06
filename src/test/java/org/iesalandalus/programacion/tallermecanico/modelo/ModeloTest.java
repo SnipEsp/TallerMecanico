@@ -1,11 +1,13 @@
 package org.iesalandalus.programacion.tallermecanico.modelo;
 
-import org.iesalandalus.programacion.tallermecanico.modelo.cascada.ModeloCascada;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.*;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.*;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.memoria.Clientes;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.memoria.Trabajos;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.memoria.Vehiculos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.FabricaFuenteDatos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ITrabajos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IVehiculos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Clientes;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Trabajos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Vehiculos;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,7 @@ import org.mockito.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,18 +25,18 @@ import static org.mockito.Mockito.*;
 class ModeloTest {
 
     @Mock
-    private IClientes clientes;
+    private static IClientes clientes;
     @Mock
-    private IVehiculos vehiculos;
+    private static IVehiculos vehiculos;
     @Mock
-    private ITrabajos trabajos;
+    private static ITrabajos trabajos;
+    @InjectMocks
+    private Modelo modelo = FabricaModelo.CASCADA.crear(FabricaFuenteDatos.FICHEROS);
 
-    private Modelo modelo;
-
-    private Cliente cliente;
-    private Vehiculo vehiculo;
-    private Revision revision;
-    private Mecanico mecanico;
+    private static Cliente cliente;
+    private static Vehiculo vehiculo;
+    private static Revision revision;
+    private static Mecanico mecanico;
 
     private AutoCloseable procesadorAnotaciones;
     private MockedConstruction<Cliente> controladorCreacionMockCliente;
@@ -44,16 +47,16 @@ class ModeloTest {
     private MockedConstruction<Trabajos> controladorCreacionMockTrabajos;
 
 
-    @BeforeEach
-    void init() {
+    @BeforeAll
+    static void setup() {
         cliente = mock();
         when(cliente.getNombre()).thenReturn("Bob Esponja");
         when(cliente.getDni()).thenReturn("11223344B");
         when(cliente.getTelefono()).thenReturn("950112233");
         vehiculo = mock();
-        when(vehiculo.getMarca()).thenReturn("Seat");
-        when(vehiculo.getModelo()).thenReturn("León");
-        when(vehiculo.getMatricula()).thenReturn("1234BCD");
+        when(vehiculo.marca()).thenReturn("Seat");
+        when(vehiculo.modelo()).thenReturn("León");
+        when(vehiculo.matricula()).thenReturn("1234BCD");
         revision = mock();
         when(revision.getCliente()).thenReturn(cliente);
         when(revision.getVehiculo()).thenReturn(vehiculo);
@@ -62,7 +65,10 @@ class ModeloTest {
         when(mecanico.getCliente()).thenReturn(cliente);
         when(mecanico.getVehiculo()).thenReturn(vehiculo);
         when(mecanico.getFechaInicio()).thenReturn(LocalDate.now().minusDays(1));
+    }
 
+    @BeforeEach
+    void init() {
         controladorCreacionMockCliente = mockConstruction(Cliente.class);
         controladorCreacionMockClientes = mockConstruction(Clientes.class);
         controladorCreacionMockVehiculos = mockConstruction(Vehiculos.class);
@@ -70,8 +76,6 @@ class ModeloTest {
         controladorCreacionMockMecanico = mockConstruction(Mecanico.class);
         controladorCreacionMockTrabajos = mockConstruction(Trabajos.class);
         procesadorAnotaciones = MockitoAnnotations.openMocks(this);
-        modelo = new ModeloCascada(clientes, vehiculos, trabajos);
-        modelo.comenzar();
     }
 
     @AfterEach
@@ -178,7 +182,6 @@ class ModeloTest {
 
     @Test
     void cerrarLlamaTrabajosCerrar() {
-        when(trabajos.cerrar(revision, LocalDate.now())).thenReturn(revision);
         assertDoesNotThrow(() -> modelo.cerrar(revision, LocalDate.now()));
         assertDoesNotThrow(() -> verify(trabajos).cerrar(revision, LocalDate.now()));
     }
@@ -217,7 +220,6 @@ class ModeloTest {
 
     @Test
     void borrarTrabajoLlamaTrabajosBorrar() {
-        when(trabajos.borrar(revision)).thenReturn(revision);
         assertDoesNotThrow(() -> modelo.borrar(revision));
         assertDoesNotThrow(() -> verify(trabajos).borrar(revision));
     }
@@ -260,6 +262,13 @@ class ModeloTest {
         List<Trabajo> trabajosVehiculo = modelo.getTrabajos(vehiculo);
         verify(trabajos).get(vehiculo);
         assertNotSame(revision, trabajosVehiculo.get(0));
+    }
+
+    @Test
+    void getEstadisticasMensualesLlamaTrabajosGetEstadisticasMensuales() {
+        when(trabajos.getEstadisticasMensuales(LocalDate.now())).thenReturn(new EnumMap<>(TipoTrabajo.class));
+        modelo.getEstadisticasMensuales(LocalDate.now());
+        verify(trabajos).getEstadisticasMensuales(LocalDate.now());
     }
 
 }
