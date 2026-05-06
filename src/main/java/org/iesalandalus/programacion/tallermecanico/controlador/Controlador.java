@@ -1,5 +1,6 @@
 package org.iesalandalus.programacion.tallermecanico.controlador;
 
+import org.iesalandalus.programacion.tallermecanico.modelo.FabricaModelo;
 import org.iesalandalus.programacion.tallermecanico.modelo.Modelo;
 import org.iesalandalus.programacion.tallermecanico.modelo.cascada.ModeloCascada;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
@@ -7,6 +8,8 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Mecanico;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.FabricaFuenteDatos;
+import org.iesalandalus.programacion.tallermecanico.vista.FabricaVista;
 import org.iesalandalus.programacion.tallermecanico.vista.IVista;
 import org.iesalandalus.programacion.tallermecanico.vista.eventos.Evento;
 
@@ -25,22 +28,28 @@ public class Controlador implements IControlador {
     private IVista vista;
 
     /**
-     * Constructor que inicializa el controlador con el modelo y la vista.
-     * Establece la comunicación bidireccional entre los componentes.
+     * Constructor que inicializa el controlador con las fábricas.
+     * Crea el modelo y la vista utilizando las fábricas proporcionadas.
      * 
-     * @param modelo Modelo que gestiona los datos del taller
-     * @param vista Vista que gestiona la interfaz de usuario
-     * @throws IllegalArgumentException Si modelo o vista son nulos
+     * @param fabricaModelo Fábrica para crear el modelo
+     * @param fabricaFuenteDatos Fábrica para crear la fuente de datos
+     * @param fabricaVista Fábrica para crear la vista
+     * @throws IllegalArgumentException Si alguna fábrica es nula
      */
-    public Controlador(Modelo modelo, IVista vista) {
-        if (modelo == null) {
-            throw new IllegalArgumentException("El modelo no puede ser nulo.");
+    public Controlador(FabricaModelo fabricaModelo, FabricaFuenteDatos fabricaFuenteDatos, FabricaVista fabricaVista) {
+        if (fabricaModelo == null) {
+            throw new IllegalArgumentException("La fábrica de modelo no puede ser nula.");
         }
-        if (vista == null) {
-            throw new IllegalArgumentException("La vista no puede ser nula.");
+        if (fabricaFuenteDatos == null) {
+            throw new IllegalArgumentException("La fábrica de fuente de datos no puede ser nula.");
         }
-        this.modelo = modelo;
-        this.vista = vista;
+        if (fabricaVista == null) {
+            throw new IllegalArgumentException("La fábrica de vista no puede ser nula.");
+        }
+        
+        // Crear el modelo y la vista usando las fábricas
+        this.modelo = fabricaModelo.crear(fabricaFuenteDatos);
+        this.vista = fabricaVista.crear();
         this.vista.setControlador(this);
     }
 
