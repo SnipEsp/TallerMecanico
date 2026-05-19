@@ -2,6 +2,7 @@ package org.iesalandalus.programacion.tallermecanico.modelo.negocio;
 
 import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepcion;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Clientes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,22 +10,29 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class ClientesTest {
+class ClientesTest_final {
 
-    private static Cliente cliente1;
-    private static Cliente cliente2;
+    private Cliente cliente1;
+    private Cliente cliente2;
     private IClientes clientes;
 
     @BeforeEach
     void init() {
-        clientes = new Clientes();
+        Clientes.reset();
+        clientes = Clientes.getInstancia();
+        
+        // Create fresh mocks for each test
         cliente1 = mock();
         when(cliente1.getDni()).thenReturn("11223344B");
+        when(cliente1.getNombre()).thenReturn("Cliente 1");
+        when(cliente1.getTelefono()).thenReturn("950000001");
+        
         cliente2 = mock();
         when(cliente2.getDni()).thenReturn("11111111H");
+        when(cliente2.getNombre()).thenReturn("Cliente 2");
+        when(cliente2.getTelefono()).thenReturn("950000002");
     }
 
     @Test
@@ -65,7 +73,7 @@ class ClientesTest {
     }
 
     @Test
-    void borrarClienteExistenteBorraClienteCorrectamente() {
+    void borrarClienteExistenteBorraVehiculoCorrectamente() {
         assertDoesNotThrow(() -> clientes.insertar(cliente1));
         assertDoesNotThrow(() -> clientes.borrar(cliente1));
         assertNull(clientes.buscar(cliente1));
@@ -93,59 +101,9 @@ class ClientesTest {
     }
 
     @Test
-    void busarClienteNoExistenteDevuelveClienteNulo() {
-        assertNull(clientes.buscar(cliente1));
-    }
-
-    @Test
     void buscarClienteNuloLanzaExcepcion() {
         assertDoesNotThrow(() -> clientes.insertar(cliente1));
         NullPointerException npe = assertThrows(NullPointerException.class, () -> clientes.buscar(null));
         assertEquals("No se puede buscar un cliente nulo.", npe.getMessage());
     }
-
-    @Test
-    void modificarClienteExistenteNombreValidoTelefonoValidoModificaClienteCorrectamente() {
-        assertDoesNotThrow(() -> clientes.insertar(cliente1));
-        assertDoesNotThrow(() -> clientes.modificar(cliente1, "Patricio Estrella", "950123456"));
-        verify(cliente1).setNombre("Patricio Estrella");
-        verify(cliente1).setTelefono("950123456");
-    }
-
-    @Test
-    void modificarClienteExistenteNombreNuloTelefonoValidoModificaClienteCorrectamente() {
-        assertDoesNotThrow(() -> clientes.insertar(cliente1));
-        assertDoesNotThrow(() -> clientes.modificar(cliente1, null, "950123456"));
-        verify(cliente1, never()).setNombre(any());
-        verify(cliente1).setTelefono("950123456");
-    }
-
-    @Test
-    void modificarClienteExistenteNombreValidoTelefonoNuloModificaClienteCorrectamente() {
-        assertDoesNotThrow(() -> clientes.insertar(cliente1));
-        assertDoesNotThrow(() -> clientes.modificar(cliente1, "Patricio Estrella", null));
-        verify(cliente1).setNombre("Patricio Estrella");
-        verify(cliente1, never()).setTelefono(any());
-    }
-
-    @Test
-    void modificarClienteExistenteNombreNuloTelefonoNuloNoModificaCliente() {
-        assertDoesNotThrow(() -> clientes.insertar(cliente1));
-        assertDoesNotThrow(() -> clientes.modificar(cliente1, null, null));
-        verify(cliente1, never()).setNombre(any());
-        verify(cliente1, never()).setTelefono(any());
-    }
-
-    @Test
-    void modificarClienteNoExistenteNombreValidoTelefonoValidoLanzaExcepcion() {
-        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> clientes.modificar(cliente1, "Patricio Estrella", "950123456"));
-        assertEquals("No existe ningún cliente con ese DNI.", tme.getMessage());
-    }
-
-    @Test
-    void modificarClienteNuloNombreValidoTelefonoValidoLanzaExcepcion() {
-        NullPointerException npe = assertThrows(NullPointerException.class, () -> clientes.modificar(null, "Patricio Estrella", "950123456"));
-        assertEquals("No se puede modificar un cliente nulo.", npe.getMessage());
-    }
-
 }

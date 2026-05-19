@@ -8,7 +8,7 @@ import org.iesalandalus.programacion.tallermecanico.vista.FabricaVista;
 public class Main {
     public static void main(String[] args) {
         // Crear el controlador pasándole las fábricas
-        Controlador controlador = new Controlador(FabricaModelo.CASCADA, FabricaFuenteDatos.MEMORIA, FabricaVista.TEXTO);
+        Controlador controlador = new Controlador(FabricaModelo.CASCADA, FabricaFuenteDatos.FICHEROS, FabricaVista.TEXTO);
         
         // Iniciar la aplicación
         controlador.comenzar();

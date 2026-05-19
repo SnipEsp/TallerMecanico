@@ -82,6 +82,7 @@ public class ModeloCascada implements Modelo {
     @Override
     public void comenzar() {
         if (fuenteDatos != null) {
+            fuenteDatos.comenzar();
             clientes = fuenteDatos.crearClientes();
             vehiculos = fuenteDatos.crearVehiculos();
             trabajos = fuenteDatos.crearTrabajos();
@@ -96,6 +97,9 @@ public class ModeloCascada implements Modelo {
      */
     @Override
     public void terminar() {
+        if (fuenteDatos != null) {
+            fuenteDatos.terminar();
+        }
         System.out.println("El modelo del taller mecánico ha finalizado correctamente.");
     }
 
@@ -530,8 +534,8 @@ public class ModeloCascada implements Modelo {
     }
 
     @Override
-    public Map<TipoTrabajo, Integer> getEstadisticasMensuales() {
-        return trabajos.getEstadisticasMensuales();
+    public Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes) {
+        return trabajos.getEstadisticasMensuales(mes);
     }
 }
 

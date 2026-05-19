@@ -63,6 +63,6 @@ public interface Modelo {
 
     List<Trabajo> getTrabajos(Vehiculo vehiculo);
 
-    Map<TipoTrabajo, Integer> getEstadisticasMensuales();
+    Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes);
 
 }

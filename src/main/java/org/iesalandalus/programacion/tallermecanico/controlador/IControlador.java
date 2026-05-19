@@ -80,5 +80,5 @@ public interface IControlador extends ReceptorEventos {
 
     Trabajo cerrar(Vehiculo vehiculo, LocalDate fechaCierre) throws OperationNotSupportedException;
 
-    Map<TipoTrabajo, Integer> getEstadisticasMensuales();
+    Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes);
 }

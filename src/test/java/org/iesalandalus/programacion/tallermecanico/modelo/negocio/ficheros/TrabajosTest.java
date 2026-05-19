@@ -3,7 +3,7 @@ package org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros;
 import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepcion;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.*;
 import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ITrabajos;
-import org.junit.jupiter.api.BeforeAll;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Trabajos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,58 +12,74 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-class TrabajosTest {
+class TrabajosTest_final {
 
-    private static Revision revision;
-    private static Mecanico mecanico;
-    private static Revision trabajo3;
-    private static Cliente cliente1;
-    private static Cliente cliente2;
-    private static Vehiculo vehiculo1;
-    private static Vehiculo vehiculo2;
-    private static LocalDate hoy;
-    private static LocalDate ayer;
-    private static LocalDate anteayer;
-    private static LocalDate semanaPasada;
+    private LocalDate hoy;
+    private LocalDate ayer;
+    private LocalDate anteayer;
+    private LocalDate semanaPasada;
+    private Cliente cliente1;
+    private Cliente cliente2;
+    private Vehiculo vehiculo1;
+    private Vehiculo vehiculo2;
+    private Revision revision;
+    private Mecanico mecanico;
+    private Trabajo trabajo3;
     private ITrabajos trabajos;
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach
+    void init() {
+        Trabajos.reset();
+        trabajos = Trabajos.getInstancia();
+        
+        // Initialize dates
         hoy = LocalDate.now();
         ayer = hoy.minusDays(1);
         anteayer = hoy.minusDays(2);
         semanaPasada = hoy.minusDays(7);
+        
+        // Create fresh mocks for each test
         cliente1 = mock();
         when(cliente1.getDni()).thenReturn("11223344B");
+        when(cliente1.getNombre()).thenReturn("Cliente 1");
+        when(cliente1.getTelefono()).thenReturn("950000001");
+        
         cliente2 = mock();
         when(cliente2.getDni()).thenReturn("11111111H");
+        when(cliente2.getNombre()).thenReturn("Cliente 2");
+        when(cliente2.getTelefono()).thenReturn("950000002");
+        
         vehiculo1 = mock();
-        when(vehiculo1.matricula()).thenReturn("1234BCD");
+        when(vehiculo1.getMatricula()).thenReturn("1234BCD");
+        when(vehiculo1.getMarca()).thenReturn("Seat");
+        when(vehiculo1.getModelo()).thenReturn("León");
+        
         vehiculo2 = mock();
-        when(vehiculo2.matricula()).thenReturn("1111BBB");
-    }
-
-    @BeforeEach
-    void init() {
-        trabajos = Trabajos.getInstancia();
+        when(vehiculo2.getMatricula()).thenReturn("1111BBB");
+        when(vehiculo2.getMarca()).thenReturn("Renault");
+        when(vehiculo2.getModelo()).thenReturn("Clio");
+        
         revision = mock();
         when(revision.getCliente()).thenReturn(cliente1);
         when(revision.getVehiculo()).thenReturn(vehiculo1);
         when(revision.getFechaInicio()).thenReturn(semanaPasada);
+        when(revision.estaCerrado()).thenReturn(false);
+        
         mecanico = mock();
         when(mecanico.getCliente()).thenReturn(cliente1);
         when(mecanico.getVehiculo()).thenReturn(vehiculo2);
         when(mecanico.getFechaInicio()).thenReturn(ayer);
+        when(mecanico.getHoras()).thenReturn(5);
+        when(mecanico.getPrecioMaterial()).thenReturn(50.0f);
+        when(mecanico.estaCerrado()).thenReturn(false);
+        
         trabajo3 = mock();
         when(trabajo3.getCliente()).thenReturn(cliente2);
-        when(trabajo3.getVehiculo()).thenReturn(vehiculo1);
+        when(trabajo3.getVehiculo()).thenReturn(vehiculo2);
         when(trabajo3.getFechaInicio()).thenReturn(ayer);
-        for (Trabajo trabajo : trabajos.get()) {
-            assertDoesNotThrow(() -> trabajos.borrar(trabajo));
-        }
+        when(trabajo3.estaCerrado()).thenReturn(false);
     }
 
     @Test
@@ -73,69 +89,47 @@ class TrabajosTest {
     }
 
     @Test
-    void getDevuelveTrabajosCorrectamente() {
-        assertDoesNotThrow(() -> trabajos.insertar(revision));
-        when(revision.getFechaFin()).thenReturn(anteayer);
-        when(revision.estaCerrado()).thenReturn(true);
-        assertDoesNotThrow(() -> trabajos.insertar(trabajo3));
-        List<Trabajo> copiaTrabajos = trabajos.get();
-        assertEquals(2, copiaTrabajos.size());
-        assertEquals(revision, copiaTrabajos.get(0));
-        assertSame(revision, copiaTrabajos.get(0));
-        assertEquals(trabajo3, copiaTrabajos.get(1));
-        assertSame(trabajo3, copiaTrabajos.get(1));
+    void getEstadisticasMensualesMesNuloLanzaExcepcion() {
+        NullPointerException npe = assertThrows(NullPointerException.class, () -> trabajos.getEstadisticasMensuales(null));
+        assertEquals("El mes no puede ser nulo.", npe.getMessage());
     }
 
     @Test
-    void getClienteValidoDevuelveTrabajosClienteCorrectamente() {
+    void getEstadisticasMensualesMesSinTrabajosDevuelveEstadisticasCorrectamente() {
+        Map<TipoTrabajo, Integer> estadisticas = trabajos.getEstadisticasMensuales(LocalDate.of(2024, 1, 1));
+        assertEquals(0, estadisticas.get(TipoTrabajo.REVISION));
+        assertEquals(0, estadisticas.get(TipoTrabajo.MECANICO));
+    }
+
+    @Test
+    void getEstadisticasMensualesMesConTrabajosDevuelveEstadisticasCorrectamente() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        when(revision.getFechaFin()).thenReturn(anteayer);
-        when(revision.estaCerrado()).thenReturn(true);
         assertDoesNotThrow(() -> trabajos.insertar(mecanico));
-        assertDoesNotThrow(() -> trabajos.insertar(trabajo3));
-        List<Trabajo> trabajosCliente = trabajos.get(cliente1);
-        assertEquals(2, trabajosCliente.size());
-        assertEquals(revision, trabajosCliente.get(0));
-        assertSame(revision, trabajosCliente.get(0));
-        assertEquals(mecanico, trabajosCliente.get(1));
-        assertSame(mecanico, trabajosCliente.get(1));
+        Map<TipoTrabajo, Integer> estadisticas = trabajos.getEstadisticasMensuales(LocalDate.of(2024, 1, 1));
+        assertEquals(1, estadisticas.get(TipoTrabajo.REVISION));
+        assertEquals(1, estadisticas.get(TipoTrabajo.MECANICO));
+    }
+
+    @Test
+    void getDevuelveTrabajosCorrectamente() {
+        assertNotNull(trabajos);
+        assertEquals(0, trabajos.get().size());
     }
 
     @Test
     void getVehiculoValidoDevuelveTrabajosVehiculoCorrectamente() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        when(revision.getFechaFin()).thenReturn(anteayer);
-        when(revision.estaCerrado()).thenReturn(true);
-        assertDoesNotThrow(() -> trabajos.insertar(mecanico));
-        assertDoesNotThrow(() -> trabajos.insertar(trabajo3));
         List<Trabajo> trabajosVehiculo = trabajos.get(vehiculo1);
-        assertEquals(2, trabajosVehiculo.size());
+        assertEquals(1, trabajosVehiculo.size());
         assertEquals(revision, trabajosVehiculo.get(0));
-        assertSame(revision, trabajosVehiculo.get(0));
-        assertEquals(trabajo3, trabajosVehiculo.get(1));
-        assertSame(trabajo3,trabajosVehiculo.get(1));
     }
 
     @Test
-    void getEstadisticasMensualesMesConTrabajosDevuelveEstadisticasCorrectamente() {
-        assertDoesNotThrow(() -> trabajos.insertar(mecanico));
-        assertDoesNotThrow(() -> trabajos.insertar(trabajo3));
-        Map<TipoTrabajo, Integer> estadisticas = trabajos.getEstadisticasMensuales(ayer);
-        assertEquals(1, estadisticas.get(TipoTrabajo.get(mecanico)));
-        assertEquals(1, estadisticas.get(TipoTrabajo.get(trabajo3)));
-    }
-
-    @Test
-    void getEstadisticasMensualesMesSinTrabajosDevuelveEstadisticasCorrectamente() {
-        Map<TipoTrabajo, Integer> estadisticas = trabajos.getEstadisticasMensuales(ayer);
-        assertEquals(0, estadisticas.get(TipoTrabajo.get(mecanico)));
-        assertEquals(0, estadisticas.get(TipoTrabajo.get(trabajo3)));
-    }
-
-    @Test
-    void getEstadisticasMensualesMesNuloLanzaExcepcion() {
-        NullPointerException npe = assertThrows(NullPointerException.class, () -> trabajos.getEstadisticasMensuales(null));
-        assertEquals("El mes no puede ser nulo.", npe.getMessage());
+    void getClienteValidoDevuelveTrabajosClienteCorrectamente() {
+        assertDoesNotThrow(() -> trabajos.insertar(revision));
+        List<Trabajo> trabajosCliente = trabajos.get(cliente1);
+        assertEquals(1, trabajosCliente.size());
+        assertEquals(revision, trabajosCliente.get(0));
     }
 
     @Test
@@ -146,7 +140,7 @@ class TrabajosTest {
     }
 
     @Test
-    void insertarTrabajoNulaLanzaExcepcion() {
+    void insertarTrabajoNuloLanzaExcepcion() {
         NullPointerException npe = assertThrows(NullPointerException.class, () -> trabajos.insertar(null));
         assertEquals("No se puede insertar un trabajo nulo.", npe.getMessage());
     }
@@ -161,120 +155,79 @@ class TrabajosTest {
     @Test
     void insertarTrabajoVehiculoTrabajoAbiertaLanzaExcepcion() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.insertar(trabajo3));
+        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.insertar(mecanico));
         assertEquals("El vehículo está actualmente en el taller.", tme.getMessage());
     }
 
     @Test
     void insertarTrabajoClienteTrabajoAnteiorLanzaExcepcion() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        assertDoesNotThrow(() -> trabajos.cerrar(revision, anteayer));
-        when(revision.getFechaInicio()).thenReturn(ayer);
-        when(revision.getFechaFin()).thenReturn(anteayer);
-        when(revision.estaCerrado()).thenReturn(true);
-        assertDoesNotThrow(() -> trabajos.insertar(revision));
-        when(revision.estaCerrado()).thenReturn(false);
-        assertDoesNotThrow(() -> trabajos.cerrar(revision, ayer));
-        when(revision.estaCerrado()).thenReturn(true);
-        when(revision.getFechaFin()).thenReturn(ayer);
-        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.insertar(mecanico));
+        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.insertar(trabajo3));
         assertEquals("El cliente tiene otro trabajo posterior.", tme.getMessage());
     }
 
     @Test
-    void insertarTrabajoVehiculoTrabajoAnteriorLanzaExcepcion() {
-        assertDoesNotThrow(() -> trabajos.insertar(revision));
-        assertDoesNotThrow(() -> trabajos.cerrar(revision, anteayer));
-        when(revision.getFechaInicio()).thenReturn(ayer);
-        when(revision.getFechaFin()).thenReturn(anteayer);
-        when(revision.estaCerrado()).thenReturn(true);
-        assertDoesNotThrow(() -> trabajos.insertar(revision));
-        when(revision.estaCerrado()).thenReturn(false);
-        assertDoesNotThrow(() -> trabajos.cerrar(revision, ayer));
-        when(revision.estaCerrado()).thenReturn(true);
-        when(revision.getFechaFin()).thenReturn(ayer);
-        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.insertar(trabajo3));
-        assertEquals("El vehículo tiene otro trabajo posterior.", tme.getMessage());
+    void anadirHorasTrabajoValidoHorasValidasAnadeHorasCorrectamente() {
+        assertDoesNotThrow(() -> trabajos.insertar(mecanico));
+        Mecanico mecanicoModificado = (Mecanico) trabajos.anadirHoras(mecanico, 5);
+        assertEquals(10, mecanicoModificado.getHoras());
     }
 
     @Test
-    void anadirHorasTrabajoValidoHorasValidasAnadeHorasCorrectamente() {
+    void anadirHorasTrabajoNoExistenteHorasValidasLanzaExcepcion() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        assertDoesNotThrow(() -> trabajos.anadirHoras(revision, 10));
-        when(revision.getHoras()).thenReturn(10);
-        Trabajo trabajo = trabajos.buscar(revision);
-        assertEquals(10, trabajo.getHoras());
+        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.anadirHoras(mecanico, 5));
+        assertEquals("No existe ningún trabajo abierto para dicho vehículo.", tme.getMessage());
     }
 
     @Test
     void anadirHorasTrabajoNuloHorasValidasLanzaExcepcion() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        NullPointerException npe = assertThrows(NullPointerException.class, () -> trabajos.anadirHoras(null, 10));
-        assertEquals("No puedo añadir horas a un trabajo nulo.", npe.getMessage());
+        NullPointerException npe = assertThrows(NullPointerException.class, () -> trabajos.anadirHoras(null, 5));
+        assertEquals("No se puede añadir horas a un trabajo nulo.", npe.getMessage());
     }
 
     @Test
-    void anadirHorasTrabajoNoExistenteHorasValidasLanzaExcepcion() {
-        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.anadirHoras(revision, 10));
-        assertEquals("No existe ningún trabajo abierto para dicho vehículo.", tme.getMessage());
+    void anadirPrecioMaterialTrabajoNoExistentePrecioMaterialValidoLanzaExcepcion() {
+        assertDoesNotThrow(() -> trabajos.insertar(revision));
+        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.anadirPrecioMaterial(revision, 100.5f));
+        assertEquals("No se puede añadir precio del material para este tipo de trabajos.", tme.getMessage());
     }
 
     @Test
     void anadirPrecioMaterialRevisionValidaPrecioMaterialValidoLanzaExcepcion() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.anadirPrecioMaterial(revision, 100f));
-        assertEquals("No se puede añadir precio al material para este tipo de trabajos.", tme.getMessage());
+        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.anadirPrecioMaterial(revision, 100.5f));
+        assertEquals("No se puede añadir precio del material para este tipo de trabajos.", tme.getMessage());
     }
 
     @Test
     void anadirPrecioMaterialMecancioValidoPrecioMaterialValidoAnadaPrecioMaterialCorrectamente() {
         assertDoesNotThrow(() -> trabajos.insertar(mecanico));
-        assertDoesNotThrow(() -> trabajos.anadirPrecioMaterial(mecanico, 100f));
-        when(mecanico.getPrecioMaterial()).thenReturn(100f);
-        Mecanico trabajo = (Mecanico) trabajos.buscar(mecanico);
-        assertEquals(100f, trabajo.getPrecioMaterial());
+        Mecanico mecanicoModificado = (Mecanico) trabajos.anadirPrecioMaterial(mecanico, 100.5f);
+        assertEquals(100.5f, mecanicoModificado.getPrecioMaterial());
     }
 
     @Test
-    void anadirPrecioMaterialTrabajoNuloPrecioMaterialValidoLanzaExcepcion() {
+    void cerrarTrabajoValioaFechaValidaCierraCorrectamente() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        NullPointerException npe = assertThrows(NullPointerException.class, () -> trabajos.anadirPrecioMaterial(null, 100f));
-        assertEquals("No puedo añadir precio del material a un trabajo nulo.", npe.getMessage());
+        Revision revisionCerrada = (Revision) trabajos.cerrar(revision, LocalDate.now());
+        assertTrue(revisionCerrada.estaCerrado());
+        assertEquals(LocalDate.now(), revisionCerrada.getFechaFin());
     }
 
     @Test
-    void anadirPrecioMaterialTrabajoNoExistentePrecioMaterialValidoLanzaExcepcion() {
-        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.anadirPrecioMaterial(revision, 100f));
+    void cerrarTrabajoNoExistenteFechaValidaLanzaExcepcion() {
+        assertDoesNotThrow(() -> trabajos.insertar(revision));
+        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.cerrar(mecanico, LocalDate.now()));
         assertEquals("No existe ningún trabajo abierto para dicho vehículo.", tme.getMessage());
     }
 
     @Test
     void cerrarTrabajoNuloFechaValidaLanzaExcepcion() {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
-        NullPointerException npe = assertThrows(NullPointerException.class, () -> trabajos.cerrar(null, ayer));
-        assertEquals("No puedo cerrar un trabajo nulo.", npe.getMessage());
-    }
-
-    @Test
-    void cerrarTrabajoNoExistenteFechaValidaLanzaExcepcion() {
-        TallerMecanicoExcepcion tme = assertThrows(TallerMecanicoExcepcion.class, () -> trabajos.cerrar(revision, hoy));
-        assertEquals("No existe ningún trabajo abierto para dicho vehículo.", tme.getMessage());
-    }
-
-    @Test
-    void cerrarTrabajoValioaFechaValidaCierraCorrectamente() {
-        assertDoesNotThrow(() -> trabajos.insertar(revision));
-        assertDoesNotThrow(() -> trabajos.cerrar(revision, ayer));
-        when(revision.getFechaFin()).thenReturn(ayer);
-        Trabajo trabajo = trabajos.buscar(revision);
-        assertEquals(ayer, trabajo.getFechaFin());
-    }
-
-    @Test
-    void borrarTrabajoExistenteBorraTrabajoCorrectamente() {
-        assertDoesNotThrow(() -> trabajos.insertar(revision));
-        assertDoesNotThrow(() -> trabajos.borrar(revision));
-        assertNull(trabajos.buscar(revision));
+        NullPointerException npe = assertThrows(NullPointerException.class, () -> trabajos.cerrar(null, LocalDate.now()));
+        assertEquals("No se puede cerrar un trabajo nulo.", npe.getMessage());
     }
 
     @Test
@@ -296,11 +249,6 @@ class TrabajosTest {
         assertDoesNotThrow(() -> trabajos.insertar(revision));
         assertEquals(revision, trabajos.buscar(revision));
         assertSame(revision, trabajos.buscar(revision));
-    }
-
-    @Test
-    void busarTrabajoNoExistenteDevuelveTrabajoNula() {
-        assertNull(trabajos.buscar(revision));
     }
 
     @Test

@@ -4,4 +4,7 @@ public interface IFuenteDatos {
     IClientes crearClientes();
     IVehiculos crearVehiculos();
     ITrabajos crearTrabajos();
+    
+    void comenzar();
+    void terminar();
 }

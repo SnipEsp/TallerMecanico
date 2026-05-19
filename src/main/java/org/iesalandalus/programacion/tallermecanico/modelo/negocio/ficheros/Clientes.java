@@ -2,16 +2,48 @@ package org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros;
 
 import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepcion;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-public class Clientes implements org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes {
-    private List<Cliente> listaClientes = new ArrayList<>();
+public class Clientes implements IClientes {
+    // Instancia única y privada
+    private static Clientes instancia;
+
+    // Nombre del fichero XML
+    private static final String FICHERO_CLIENTES = "datos/clientes.xml";
+
+    // Colección de clientes
+    private List<Cliente> listaClientes;
+
+    // Constructor privado para evitar instanciación externa
+    private Clientes() {
+        this.listaClientes = new ArrayList<>();
+    }
+
+    // Método público estático para obtener la instancia única
+    public static Clientes getInstancia() {
+        if (instancia == null) {
+            instancia = new Clientes();
+        }
+        return instancia;
+    }
+
+    public static void reset() {
+        instancia = null;
+    }
 
     @Override
     public List<Cliente> get() {
-        return new ArrayList<>(this.listaClientes);
+        List<Cliente> clientesOrdenados = new ArrayList<>(this.listaClientes);
+        clientesOrdenados.sort(Comparator.comparing(Cliente::getNombre).thenComparing(Cliente::getDni));
+        return clientesOrdenados;
     }
 
     @Override
@@ -70,6 +102,34 @@ public class Clientes implements org.iesalandalus.programacion.tallermecanico.mo
         }
     }
 
+    private Cliente getCliente(Element elemento) {
+        String dni = elemento.getAttribute("dni");
+        String nombre = elemento.getAttribute("nombre");
+        String telefono = elemento.getAttribute("telefono");
+        return new Cliente(nombre, dni, telefono);
+    }
+
+    public void comenzar() {
+        Document documentoXML = UtilidadesXml.leerDocumentoXml(FICHERO_CLIENTES);
+        if (documentoXML != null) {
+            procesarDocumentoXML(documentoXML);
+            System.out.printf("Fichero %s leido correctamente.%n", FICHERO_CLIENTES);
+        }
+    }
+
+    procesarDocumentoXML(Document documentoXML) {
+        NodeList lista = documentoXML.getElementsByTagName(TRABAJO);
+
+        for (int i = 0; i < lista.getLength(); i++) {
+            insertar(getTrabajo((Element) nodo));
+        }
+    }
+
+    public void terminar() throws ParserConfigurationException {
+        Document documentoXML = crearDocumentoXML();
+        UtilidadesXml.escribirDocumentoXml(documentoXML, FICHERO_CLIENTES);
+
+    }
 
 }
 

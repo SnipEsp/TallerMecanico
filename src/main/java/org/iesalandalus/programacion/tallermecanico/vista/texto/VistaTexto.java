@@ -321,6 +321,15 @@ public class VistaTexto implements IVista {
         if (clientes.isEmpty()) {
             System.out.println("No hay clientes registrados.");
         } else {
+            // Ordenar clientes por nombre y luego por DNI
+            clientes.sort((c1, c2) -> {
+                int nombreComparison = c1.getNombre().compareTo(c2.getNombre());
+                if (nombreComparison != 0) {
+                    return nombreComparison;
+                }
+                return c1.getDni().compareTo(c2.getDni());
+            });
+            
             for (Cliente cliente : clientes) {
                 System.out.println(cliente);
             }
@@ -337,6 +346,19 @@ public class VistaTexto implements IVista {
         if (vehiculos.isEmpty()) {
             System.out.println("No hay vehículos registrados.");
         } else {
+            // Ordenar vehículos por marca, modelo y matrícula
+            vehiculos.sort((v1, v2) -> {
+                int marcaComparison = v1.getMarca().compareTo(v2.getMarca());
+                if (marcaComparison != 0) {
+                    return marcaComparison;
+                }
+                int modeloComparison = v1.getModelo().compareTo(v2.getModelo());
+                if (modeloComparison != 0) {
+                    return modeloComparison;
+                }
+                return v1.getMatricula().compareTo(v2.getMatricula());
+            });
+            
             for (Vehiculo vehiculo : vehiculos) {
                 System.out.println(vehiculo);
             }
@@ -353,6 +375,19 @@ public class VistaTexto implements IVista {
         if (trabajos.isEmpty()) {
             System.out.println("No hay trabajos registrados.");
         } else {
+            // Ordenar trabajos por fecha de inicio y luego por cliente (nombre y DNI)
+            trabajos.sort((t1, t2) -> {
+                int fechaComparison = t1.getFechaInicio().compareTo(t2.getFechaInicio());
+                if (fechaComparison != 0) {
+                    return fechaComparison;
+                }
+                int nombreComparison = t1.getCliente().getNombre().compareTo(t2.getCliente().getNombre());
+                if (nombreComparison != 0) {
+                    return nombreComparison;
+                }
+                return t1.getCliente().getDni().compareTo(t2.getCliente().getDni());
+            });
+            
             for (Trabajo trabajo : trabajos) {
                 System.out.println(trabajo);
             }
@@ -413,7 +448,8 @@ public class VistaTexto implements IVista {
 
     @Override
     public void mostrarEstadisticasMensuales(Month mes) {
-        Map<TipoTrabajo, Integer> estadisticas = controlador.getEstadisticasMensuales();
+        LocalDate fechaMes = LocalDate.of(LocalDate.now().getYear(), mes, 1);
+        Map<TipoTrabajo, Integer> estadisticas = controlador.getEstadisticasMensuales(fechaMes);
         
         System.out.println("Estadísticas para el mes de " + mes + ":");
         System.out.println("Revisiones: " + estadisticas.get(TipoTrabajo.REVISION));

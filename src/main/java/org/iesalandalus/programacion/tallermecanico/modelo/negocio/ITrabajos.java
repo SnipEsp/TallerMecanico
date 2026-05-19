@@ -29,7 +29,7 @@ public interface ITrabajos {
 
     Trabajo buscar(Trabajo trabajo);
 
-    Trabajo borrar(Trabajo trabajo) throws TallerMecanicoExcepcion;
+    void borrar(Trabajo trabajo) throws TallerMecanicoExcepcion;
 
-    Map<TipoTrabajo, Integer> getEstadisticasMensuales();
+    Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes);
 }

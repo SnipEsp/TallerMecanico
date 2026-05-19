@@ -537,7 +537,7 @@ public class Controlador implements IControlador {
     }
 
     @Override
-    public Map<TipoTrabajo, Integer> getEstadisticasMensuales() {
-        return modelo.getEstadisticasMensuales();
+    public Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes) {
+        return modelo.getEstadisticasMensuales(mes);
     }
 }
