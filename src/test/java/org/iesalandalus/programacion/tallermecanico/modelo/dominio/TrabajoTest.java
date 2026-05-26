@@ -47,9 +47,9 @@ class TrabajoTest {
 
     private void creaComportamientoVehiculo() {
         vehiculo = mock();
-        when(vehiculo.getMarca()).thenReturn("Seat");
-        when(vehiculo.getModelo()).thenReturn("León");
-        when(vehiculo.getMatricula()).thenReturn("1234BCD");
+        when(vehiculo.marca()).thenReturn("Seat");
+        when(vehiculo.modelo()).thenReturn("León");
+        when(vehiculo.matricula()).thenReturn("1234BCD");
     }
 
     private void creaComportamientoCliente() {

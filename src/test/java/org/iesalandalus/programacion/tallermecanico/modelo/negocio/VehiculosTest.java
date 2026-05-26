@@ -2,8 +2,8 @@ package org.iesalandalus.programacion.tallermecanico.modelo.negocio;
 
 import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepcion;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IVehiculos;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Vehiculos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.memoria.Vehiculos;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,20 +13,23 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class VehiculosTest_final {
+class VehiculosTest {
 
-    private Vehiculo vehiculo1;
-    private Vehiculo vehiculo2;
+    private static Vehiculo vehiculo1;
+    private static Vehiculo vehiculo2;
     private IVehiculos iVehiculos;
+
+    @BeforeAll
+    static void setup() {
+        vehiculo1 = mock();
+        when(vehiculo1.matricula()).thenReturn("1234BCD");
+        vehiculo2 = mock();
+        when(vehiculo2.matricula()).thenReturn("1111BBB");
+    }
 
     @BeforeEach
     void init() {
-        Vehiculos.reset();
-        iVehiculos = Vehiculos.getInstancia();
-        
-        // Create real Vehiculo objects for each test
-        vehiculo1 = new Vehiculo("Seat", "León", "1234BCD");
-        vehiculo2 = new Vehiculo("Renault", "Clio", "1111BBB");
+        iVehiculos = new Vehiculos();
     }
 
     @Test
@@ -40,18 +43,17 @@ class VehiculosTest_final {
         assertDoesNotThrow(() -> iVehiculos.insertar(vehiculo1));
         assertDoesNotThrow(() -> iVehiculos.insertar(vehiculo2));
         List<Vehiculo> copiaVehiculos = iVehiculos.get();
-        assertEquals(2, copiaVehiculos.size());
-        // Check that both vehicles are present (order may vary due to sorting)
-        assertTrue(copiaVehiculos.stream().anyMatch(v -> "1234BCD".equals(v.getMatricula())));
-        assertTrue(copiaVehiculos.stream().anyMatch(v -> "1111BBB".equals(v.getMatricula())));
+        assertEquals(vehiculo1, copiaVehiculos.get(0));
+        assertSame(vehiculo1, copiaVehiculos.get(0));
+        assertEquals(vehiculo2, copiaVehiculos.get(1));
+        assertSame(vehiculo2, copiaVehiculos.get(1));
     }
 
     @Test
     void insertarVehiculoValidoInsertaCorrectamente() {
         assertDoesNotThrow(() -> iVehiculos.insertar(vehiculo1));
-        Vehiculo encontrado = iVehiculos.buscar(vehiculo1);
-        assertNotNull(encontrado);
-        assertEquals("1234BCD", encontrado.getMatricula());
+        assertEquals(vehiculo1, iVehiculos.buscar(vehiculo1));
+        assertSame(vehiculo1, iVehiculos.buscar(vehiculo1));
     }
 
     @Test
@@ -91,9 +93,8 @@ class VehiculosTest_final {
     @Test
     void busarVehiculoExistenteDevuelveVehiculoCorrectamente() {
         assertDoesNotThrow(() -> iVehiculos.insertar(vehiculo1));
-        Vehiculo encontrado = iVehiculos.buscar(vehiculo1);
-        assertNotNull(encontrado);
-        assertEquals("1234BCD", encontrado.getMatricula());
+        assertEquals(vehiculo1, iVehiculos.buscar(vehiculo1));
+        assertSame(vehiculo1, iVehiculos.buscar(vehiculo1));
     }
 
     @Test

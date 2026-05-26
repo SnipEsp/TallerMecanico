@@ -10,9 +10,9 @@ public interface IClientes {
 
     void insertar(Cliente cliente) throws TallerMecanicoExcepcion;
 
-    Cliente modificar(Cliente cliente, String nuevoNombre, String nuevoTelefono) throws TallerMecanicoExcepcion;
+    Cliente modificar(Cliente cliente, String nombre, String telefono) throws TallerMecanicoExcepcion;
 
     Cliente buscar(Cliente cliente);
 
-    void borrar(Cliente cliente) throws TallerMecanicoExcepcion;
+    Cliente borrar(Cliente cliente) throws TallerMecanicoExcepcion;
 }

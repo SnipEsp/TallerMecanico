@@ -4,11 +4,9 @@ import org.iesalandalus.programacion.tallermecanico.modelo.TallerMecanicoExcepci
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.TipoTrabajo;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface ITrabajos {
     List<Trabajo> get();
@@ -17,19 +15,15 @@ public interface ITrabajos {
 
     List<Trabajo> get(Vehiculo vehiculo);
 
-    void insertar(Trabajo trabajo);
+    void insertar(Trabajo trabajo) throws TallerMecanicoExcepcion;
 
-    Trabajo anadirHoras(Trabajo trabajo, int horas);
+    Trabajo anadirHoras(Trabajo trabajo, int horas) throws TallerMecanicoExcepcion;
 
-    Trabajo getTrabajoAbierto(Vehiculo vehiculo);
+    Trabajo anadirPrecioMaterial(Trabajo trabajo, float precioMaterial) throws TallerMecanicoExcepcion;
 
-    Trabajo anadirPrecioMaterial(Trabajo trabajo, float precioMaterial);
-
-    Trabajo cerrar(Trabajo trabajo, LocalDate fechaFin);
+    Trabajo cerrar(Trabajo trabajo, LocalDate fechaFin) throws TallerMecanicoExcepcion;
 
     Trabajo buscar(Trabajo trabajo);
 
-    void borrar(Trabajo trabajo) throws TallerMecanicoExcepcion;
-
-    Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes);
+    Trabajo borrar(Trabajo trabajo) throws TallerMecanicoExcepcion;
 }

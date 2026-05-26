@@ -1,463 +1,193 @@
 package org.iesalandalus.programacion.tallermecanico.vista.texto;
 
-import org.iesalandalus.programacion.tallermecanico.controlador.IControlador;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Mecanico;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
-import org.iesalandalus.programacion.tallermecanico.modelo.dominio.TipoTrabajo;
-import org.iesalandalus.programacion.tallermecanico.vista.IVista;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.*;
 import org.iesalandalus.programacion.tallermecanico.vista.eventos.Evento;
+import org.iesalandalus.programacion.tallermecanico.vista.eventos.GestorEventos;
 
-import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Clase que gestiona la interfaz de usuario del taller mecánico por consola.
- * Implementa el patrón MVC como la Vista, mostrando menús y gestionando
- * la interacción con el usuario a través de la consola.
- */
-public class VistaTexto implements IVista {
-    /**
-     * Referencia al controlador para poder delegar las operaciones del usuario.
-     * Se establece mediante inyección de dependencias.
-     */
-    private IControlador controlador;
+public class VistaTexto implements org.iesalandalus.programacion.tallermecanico.vista.Vista {
+    private GestorEventos gestorEventos = new GestorEventos(Evento.values());
 
-    /**
-     * Establece la referencia al controlador.
-     * Permite a la vista comunicarse con el controlador para procesar las operaciones.
-     * 
-     * @param controlador Controlador a establecer
-     */
     @Override
-    public void setControlador(IControlador controlador) {
-        if (controlador != null) {
-            this.controlador = controlador;
-        }
+    public GestorEventos getGestorEventos() {
+        return gestorEventos;
     }
 
-    /**
-     * Inicia la ejecución de la vista.
-     * Comienza el bucle principal del menú interactivo.
-     */
     @Override
     public void comenzar() {
-        ejecutar();
-    }
-
-    /**
-     * Finaliza la ejecución de la vista.
-     * Muestra un mensaje de despedida al usuario.
-     */
-    @Override
-    public void terminar() {
-        System.out.println("¡Hasta pronto!");
-    }
-
-    /**
-     * Bucle principal de ejecución de la aplicación.
-     * Muestra el menú, permite elegir opciones y ejecuta la correspondiente.
-     * El bucle continúa hasta que el usuario selecciona la opción de salir.
-     */
-    private void ejecutar() {
-        Evento evento;
+        Evento opcion;
+        System.out.println("¡¡¡Bienvenido al taller mecánico de Maricarmen!!!");
         do {
             Consola.mostrarMenu();
-            evento = Consola.elegirOpcion();
-            ejecutarOpcion(evento);
-        } while (evento != Evento.SALIR);
+            opcion = Consola.elegirOpcion();
+            ejecutar(opcion);
+        } while (opcion != Evento.SALIR);
     }
 
-    /**
-     * Ejecuta la operación correspondiente al evento seleccionado por el usuario.
-     * Utiliza un switch para delegar a los métodos específicos de cada operación.
-     * Captura excepciones y muestra mensajes de error al usuario.
-     * 
-     * @param evento Evento seleccionado por el usuario
-     */
-    private void ejecutarOpcion(Evento evento) {
-        try {
-            switch (evento) {
-                case INSERTAR_CLIENTE -> insertarCliente();
-                case BUSCAR_CLIENTE -> buscarCliente();
-                case BORRAR_CLIENTE -> borrarCliente();
-                case LISTAR_CLIENTES -> listarClientes();
-                case MODIFICAR_CLIENTE -> modificarCliente();
-                case INSERTAR_VEHICULO -> insertarVehiculo();
-                case BUSCAR_VEHICULO -> buscarVehiculo();
-                case BORRAR_VEHICULO -> borrarVehiculo();
-                case LISTAR_VEHICULOS -> listarVehiculos();
-                case INSERTAR_REVISION -> insertarRevision();
-                case INSERTAR_MECANICO -> insertarMecanico();
-                case BUSCAR_TRABAJO -> buscarTrabajo();
-                case BORRAR_TRABAJO -> borrarTrabajo();
-                case LISTAR_TRABAJOS -> listarTrabajos();
-                case LISTAR_TRABAJOS_CLIENTE -> listarTrabajosCliente();
-                case LISTAR_TRABAJOS_VEHICULO -> listarTrabajosVehiculo();
-                case AÑADIR_HORAS_TRABAJO -> anadirHoras();
-                case AÑADIR_PRECIO_MATERIAL_TRABAJO -> anadirPrecioMaterial();
-                case CERRAR_TRABAJO -> cerrarTrabajo();
-                case ESTADISTICAS_MENSUALES -> mostrarEstadisticasMensuales();
-                case SALIR -> salir();
-            }
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+   private void ejecutar(Evento opcion) {
+       try {
+           gestorEventos.notificar(opcion);
+       } catch (Exception e) {
+           System.out.printf("Error: %s%n", e.getMessage());
+       }
+   }
+
+    @Override
+    public void terminar(){
+        System.out.println("¡¡¡Hasta luego Maricarmen!!!");
+    }
+
+    @Override
+    public Cliente leerCliente() {
+        System.out.println("Introduce los datos del cliente:");
+        String nombre = Consola.leerCadena("Nombre: ");
+        String dni = Consola.leerCadena("DNI: ");
+        String telefono = Consola.leerCadena("Teléfono: ");
+        return new Cliente(nombre, dni, telefono);
+    }
+
+    @Override
+    public Cliente leerClienteDni() {
+        String dni = Consola.leerCadena("DNI: ");
+        return Cliente.get(dni);
+    }
+
+    @Override
+    public String leerNuevoNombre() {
+        return Consola.leerCadena("Introduce el nuevo nombre del cliente:");
+    }
+
+    @Override
+    public String leerNuevoTelefono() {
+        return Consola.leerCadena("Introduce el nuevo teléfono del cliente:");
+    }
+
+    @Override
+    public Vehiculo leerVehiculo() {
+        String marca = Consola.leerCadena("Marca: ");
+        String modelo = Consola.leerCadena("Modelo: ");
+        String matricula = Consola.leerCadena("Matrícula: ");
+        return new Vehiculo(marca, modelo, matricula);
+    }
+
+    @Override
+    public Vehiculo leerVehiculoMatricula() {
+        return Vehiculo.get(Consola.leerCadena("Matrícula: "));
+    }
+
+    @Override
+    public Revision leerRevision() {
+        Cliente cliente = leerClienteDni();
+        Vehiculo vehiculo = leerVehiculoMatricula();
+        LocalDate fechaRevision = Consola.leerFecha("Introduce la fecha de la revisión: ");
+        return new Revision(cliente, vehiculo, fechaRevision);
+    }
+
+    @Override
+    public Trabajo leerMecanico() {
+        Cliente cliente = leerClienteDni();
+        Vehiculo vehiculo = leerVehiculoMatricula();
+        LocalDate fechaRevision = Consola.leerFecha("Introduce la fecha de la revisión: ");
+        return new Mecanico(cliente, vehiculo, fechaRevision);
+    }
+
+    @Override
+    public Trabajo leerTrabajoVehiculo() {
+        Cliente cliente = leerClienteDni();
+        Vehiculo vehiculo = leerVehiculoMatricula();
+        LocalDate fechaInicio = Consola.leerFecha("Introduce la fecha de inicio: ");
+        return new Revision(cliente, vehiculo, fechaInicio);
+    }
+
+    @Override
+    public int leerHoras() {
+        return Consola.leerEntero("Introduce las horas: ");
+    }
+
+    @Override
+    public float leerPrecioMaterial() {
+        return Consola.leerReal("Introduce el precio del material: ");
+    }
+
+    @Override
+    public LocalDate leerFechaCierre() {
+        return Consola.leerFecha("Introduce la fecha de cierre de la revisión: ");
+    }
+
+    @Override
+    public void notificarResultado(Evento evento, String texto, boolean exito) {
+        if (exito) {
+            System.out.printf("%s: %s%n", evento, texto);
+        } else {
+            System.out.printf("Error en %s: %s%n", evento, texto);
         }
     }
 
-    /**
-     * Gestiona la inserción de un nuevo cliente.
-     * Muestra cabecera, lee datos del cliente y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si el cliente ya existe o es inválido
-     */
-    private void insertarCliente() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Insertar cliente");
-        Cliente cliente = Consola.leerCliente();
-        controlador.insertar(cliente);
-        System.out.println("Cliente insertado correctamente.");
-    }
-
-    /**
-     * Gestiona la inserción de un nuevo vehículo.
-     * Muestra cabecera, lee datos del vehículo y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si el vehículo ya existe o es inválido
-     */
-    private void insertarVehiculo() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Insertar vehículo");
-        Vehiculo vehiculo = Consola.leerVehiculo();
-        controlador.insertar(vehiculo);
-        System.out.println("Vehículo insertado correctamente.");
-    }
-
-    /**
-     * Gestiona la inserción de una nueva revisión.
-     * Muestra cabecera, lee datos de la revisión y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si la revisión ya existe o es inválida
-     */
-    private void insertarRevision() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Insertar revisión");
-        Revision revision = Consola.leerRevision();
-        controlador.insertar(revision);
-        System.out.println("Revisión insertada correctamente.");
-    }
-
-    /**
-     * Gestiona la inserción de un nuevo trabajo mecánico.
-     * Muestra cabecera, lee datos del trabajo mecánico y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si el trabajo mecánico ya existe o es inválido
-     */
-    private void insertarMecanico() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Insertar trabajo mecánico");
-        Mecanico mecanico = Consola.leerMecanico();
-        controlador.insertar(mecanico);
-        System.out.println("Trabajo mecánico insertado correctamente.");
-    }
-
-    /**
-     * Gestiona la búsqueda de un cliente por DNI.
-     * Muestra cabecera, lee DNI y muestra el resultado de la búsqueda.
-     */
-    private void buscarCliente() {
-        Consola.mostrarCabecera("Buscar cliente");
-        Cliente cliente = Consola.leerClienteDni();
-        Cliente encontrado = controlador.buscar(cliente);
-        if (encontrado != null) {
-            System.out.println(encontrado);
-        } else {
+    @Override
+    public void mostrarCliente(Cliente cliente) {
+        if (cliente == null) {
             System.out.println("Cliente no encontrado.");
+        } else {
+            System.out.println("Cliente encontrado:");
+            System.out.println(cliente);
         }
     }
 
-    /**
-     * Gestiona la búsqueda de un vehículo por matrícula.
-     * Muestra cabecera, lee matrícula y muestra el resultado de la búsqueda.
-     */
-    private void buscarVehiculo() {
-        Consola.mostrarCabecera("Buscar vehículo");
-        Vehiculo vehiculo = Consola.leerVehiculoMatricula();
-        Vehiculo encontrado = controlador.buscar(vehiculo);
-        if (encontrado != null) {
-            System.out.println(encontrado);
-        } else {
+    @Override
+    public void mostrarVehiculo(Vehiculo vehiculo) {
+        if (vehiculo == null) {
             System.out.println("Vehículo no encontrado.");
+        } else {
+            System.out.println("Vehículo encontrado:");
+            System.out.println(vehiculo);
         }
     }
 
-    /**
-     * Gestiona la búsqueda de un trabajo (revisión o mecánico).
-     * Muestra cabecera, lee datos del trabajo y muestra el resultado.
-     */
-    private void buscarTrabajo() {
-        Consola.mostrarCabecera("Buscar trabajo");
-        // Para buscar un trabajo, necesitamos la matrícula del vehículo
-        String matricula = Consola.leerMatricula();
-        Vehiculo vehiculo = Vehiculo.get(matricula);
-        List<Trabajo> trabajos = controlador.getTrabajos(vehiculo);
-        if (trabajos.isEmpty()) {
-            System.out.println("No hay trabajos para este vehículo.");
-        } else {
-            for (Trabajo trabajo : trabajos) {
+        @Override
+        public void mostrarTrabajo(Trabajo trabajo) {
+            if (trabajo == null) {
+                System.out.println("Trabajo no encontrado.");
+            } else {
+                System.out.println("Trabajo encontrado:");
                 System.out.println(trabajo);
             }
         }
-    }
 
-    /**
-     * Gestiona la modificación de los datos de un cliente.
-     * Muestra cabecera, lee cliente y nuevos datos, y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si el cliente no existe o los datos son inválidos
-     */
-    private void modificarCliente() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Modificar cliente");
-        Cliente cliente = Consola.leerClienteDni();
-        String nuevoNombre = Consola.leerNuevoNombre();
-        String nuevoTelefono = Consola.leerNuevoTelefono();
-        controlador.modificar(cliente, nuevoNombre, nuevoTelefono);
-        System.out.println("Cliente modificado correctamente.");
-    }
-
-    /**
-     * Gestiona la adición de horas a un trabajo.
-     * Muestra cabecera, lee matrícula y horas, y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si no existe trabajo abierto o está cerrado
-     */
-    private void anadirHoras() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Añadir horas a trabajo");
-        String matricula = Consola.leerMatricula();
-        Vehiculo vehiculo = Vehiculo.get(matricula);
-        int horas = Consola.leerHoras();
-        controlador.anadirHoras(vehiculo, horas);
-        System.out.println("Horas añadidas correctamente.");
-    }
-
-    /**
-     * Gestiona la adición de precio de material a un trabajo mecánico.
-     * Muestra cabecera, lee matrícula y precio, y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si no existe trabajo abierto o está cerrado
-     */
-    private void anadirPrecioMaterial() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Añadir precio material a trabajo");
-        String matricula = Consola.leerMatricula();
-        Vehiculo vehiculo = Vehiculo.get(matricula);
-        float precioMaterial = Consola.leerPrecioMaterial();
-        controlador.anadirPrecioMaterial(vehiculo, precioMaterial);
-        System.out.println("Precio material añadido correctamente.");
-    }
-
-    /**
-     * Gestiona el cierre de un trabajo.
-     * Muestra cabecera, lee matrícula y fecha de cierre, y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si no existe trabajo abierto o la fecha es inválida
-     */
-    private void cerrarTrabajo() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Cerrar trabajo");
-        String matricula = Consola.leerMatricula();
-        Vehiculo vehiculo = Vehiculo.get(matricula);
-        LocalDate fechaCierre = Consola.leerFechaCierre();
-        controlador.cerrar(vehiculo, fechaCierre);
-        System.out.println("Trabajo cerrado correctamente.");
-    }
-
-    /**
-     * Gestiona el borrado de un cliente y sus trabajos asociados.
-     * Muestra cabecera, lee cliente y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si el cliente no existe
-     */
-    private void borrarCliente() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Borrar cliente");
-        Cliente cliente = Consola.leerClienteDni();
-        controlador.borrar(cliente);
-        System.out.println("Cliente borrado correctamente.");
-    }
-
-    /**
-     * Gestiona el borrado de un vehículo y sus trabajos asociados.
-     * Muestra cabecera, lee vehículo y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si el vehículo no existe
-     */
-    private void borrarVehiculo() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Borrar vehículo");
-        Vehiculo vehiculo = Consola.leerVehiculoMatricula();
-        controlador.borrar(vehiculo);
-        System.out.println("Vehículo borrado correctamente.");
-    }
-
-    /**
-     * Gestiona el borrado de un trabajo específico.
-     * Muestra cabecera, lee trabajo y delega al controlador.
-     * 
-     * @throws OperationNotSupportedException Si el trabajo no existe
-     */
-    private void borrarTrabajo() throws OperationNotSupportedException {
-        Consola.mostrarCabecera("Borrar trabajo");
-        String matricula = Consola.leerMatricula();
-        Vehiculo vehiculo = Vehiculo.get(matricula);
-        controlador.borrar(vehiculo);
-        System.out.println("Trabajo borrado correctamente.");
-    }
-
-    /**
-     * Gestiona el listado de todos los clientes del sistema.
-     * Muestra cabecera, obtiene lista del controlador y la muestra por pantalla.
-     */
-    private void listarClientes() {
-        Consola.mostrarCabecera("Listar clientes");
-        List<Cliente> clientes = controlador.getClientes();
+    @Override
+    public void mostrarClientes(List<Cliente> clientes) {
         if (clientes.isEmpty()) {
-            System.out.println("No hay clientes registrados.");
+            System.out.println("No hay clientes para mostrar.");
         } else {
-            // Ordenar clientes por nombre y luego por DNI
-            clientes.sort((c1, c2) -> {
-                int nombreComparison = c1.getNombre().compareTo(c2.getNombre());
-                if (nombreComparison != 0) {
-                    return nombreComparison;
-                }
-                return c1.getDni().compareTo(c2.getDni());
-            });
-            
+            System.out.println("Lista de clientes:");
             for (Cliente cliente : clientes) {
                 System.out.println(cliente);
             }
         }
     }
 
-    /**
-     * Gestiona el listado de todos los vehículos del sistema.
-     * Muestra cabecera, obtiene lista del controlador y la muestra por pantalla.
-     */
-    private void listarVehiculos() {
-        Consola.mostrarCabecera("Listar vehículos");
-        List<Vehiculo> vehiculos = controlador.getVehiculos();
+    @Override
+    public void mostrarVehiculos(List<Vehiculo> vehiculos) {
         if (vehiculos.isEmpty()) {
-            System.out.println("No hay vehículos registrados.");
+            System.out.println("No hay vehículos para mostrar.");
         } else {
-            // Ordenar vehículos por marca, modelo y matrícula
-            vehiculos.sort((v1, v2) -> {
-                int marcaComparison = v1.getMarca().compareTo(v2.getMarca());
-                if (marcaComparison != 0) {
-                    return marcaComparison;
-                }
-                int modeloComparison = v1.getModelo().compareTo(v2.getModelo());
-                if (modeloComparison != 0) {
-                    return modeloComparison;
-                }
-                return v1.getMatricula().compareTo(v2.getMatricula());
-            });
-            
+            System.out.println("Lista de vehículos:");
             for (Vehiculo vehiculo : vehiculos) {
                 System.out.println(vehiculo);
             }
         }
     }
 
-    /**
-     * Gestiona el listado de todos los trabajos del sistema.
-     * Muestra cabecera, obtiene lista del controlador y la muestra por pantalla.
-     */
-    private void listarTrabajos() {
-        Consola.mostrarCabecera("Listar trabajos");
-        List<Trabajo> trabajos = controlador.getTrabajos();
-        if (trabajos.isEmpty()) {
-            System.out.println("No hay trabajos registrados.");
-        } else {
-            // Ordenar trabajos por fecha de inicio y luego por cliente (nombre y DNI)
-            trabajos.sort((t1, t2) -> {
-                int fechaComparison = t1.getFechaInicio().compareTo(t2.getFechaInicio());
-                if (fechaComparison != 0) {
-                    return fechaComparison;
-                }
-                int nombreComparison = t1.getCliente().getNombre().compareTo(t2.getCliente().getNombre());
-                if (nombreComparison != 0) {
-                    return nombreComparison;
-                }
-                return t1.getCliente().getDni().compareTo(t2.getCliente().getDni());
-            });
-            
-            for (Trabajo trabajo : trabajos) {
-                System.out.println(trabajo);
-            }
-        }
-    }
-
-    /**
-     * Gestiona el listado de trabajos de un cliente específico.
-     * Muestra cabecera, lee cliente, obtiene sus trabajos y los muestra.
-     */
-    private void listarTrabajosCliente() {
-        Consola.mostrarCabecera("Listar trabajos de cliente");
-        Cliente cliente = Consola.leerClienteDni();
-        List<Trabajo> trabajos = controlador.getTrabajos(cliente);
-        if (trabajos.isEmpty()) {
-            System.out.println("No hay trabajos para este cliente.");
-        } else {
-            for (Trabajo trabajo : trabajos) {
-                System.out.println(trabajo);
-            }
-        }
-    }
-
-    /**
-     * Gestiona el listado de trabajos de un vehículo específico.
-     * Muestra cabecera, lee vehículo, obtiene sus trabajos y los muestra.
-     */
-    private void listarTrabajosVehiculo() {
-        Consola.mostrarCabecera("Listar trabajos de vehículo");
-        Vehiculo vehiculo = Consola.leerVehiculoMatricula();
-        List<Trabajo> trabajos = controlador.getTrabajos(vehiculo);
-        if (trabajos.isEmpty()) {
-            System.out.println("No hay trabajos para este vehículo.");
-        } else {
-            for (Trabajo trabajo : trabajos) {
-                System.out.println(trabajo);
-            }
-        }
-    }
-
-    /**
-     * Gestiona la salida del programa.
-     * Muestra un mensaje informativo antes de terminar.
-     */
-    private void salir() {
-        System.out.println("Saliendo del programa...");
-    }
-
-    /**
-     * Gestiona el mostrar estadísticas mensuales.
-     * Lee el mes y muestra las estadísticas de trabajos completados.
-     */
-    private void mostrarEstadisticasMensuales() {
-        Consola.mostrarCabecera("Estadísticas mensuales");
-        Month mes = Consola.leerMes();
-        mostrarEstadisticasMensuales(mes);
-    }
-
     @Override
-    public void mostrarEstadisticasMensuales(Month mes) {
-        LocalDate fechaMes = LocalDate.of(LocalDate.now().getYear(), mes, 1);
-        Map<TipoTrabajo, Integer> estadisticas = controlador.getEstadisticasMensuales(fechaMes);
-        
-        System.out.println("Estadísticas para el mes de " + mes + ":");
-        System.out.println("Revisiones: " + estadisticas.get(TipoTrabajo.REVISION));
-        System.out.println("Trabajos mecánicos: " + estadisticas.get(TipoTrabajo.MECANICO));
-    }
-
-    @Override
-    public Month leerMes() {
-        return Consola.leerMes();
+    public void mostrarTrabajos(List<Trabajo> trabajos) {
+        if (trabajos.isEmpty()) {
+            System.out.println("No hay trabajos para mostrar.");
+        } else {
+            System.out.println("Lista de trabajos:");
+            for (Trabajo trabajo : trabajos) {
+                System.out.println(trabajo);
+            }
+        }
     }
 }

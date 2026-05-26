@@ -19,9 +19,9 @@ class VehiculoTest {
 			"Seat, KK, 1234BCD", "Seat, 123, 1234BCD", "Seat, León, 1111BBB", "Seat, León, 9999ZZZ"})
 	void constructorMarcaValidaModeloValidoMatrivaValidaCreaVehiculoCorrectamente(String marca, String modelo, String matricula) {
 		Vehiculo vehiculo = new Vehiculo(marca, modelo, matricula);
-		assertEquals(marca, vehiculo.getMarca());
-		assertEquals(modelo, vehiculo.getModelo());
-		assertEquals(matricula, vehiculo.getMatricula());
+		assertEquals(marca, vehiculo.marca());
+		assertEquals(modelo, vehiculo.modelo());
+		assertEquals(matricula, vehiculo.matricula());
 	}
 
 	@Test
